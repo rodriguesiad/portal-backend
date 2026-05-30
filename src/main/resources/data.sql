@@ -3,7 +3,11 @@ INSERT INTO user
 VALUES
 -- Usuário Principal
 ('2026-05-30', '2026-05-30', 'Caio Alexandre', 'alexandre.caio.ramos@gmail.com',
- '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'ADMINISTRADOR');
+ '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'ADMINISTRADOR'),
+('2026-05-30', '2026-05-30', 'avaliador@portal.to.gov.br', 'Avaliador Tocantins',
+    '$2a$10$n1caugbb0qqeX8zoO0ED9exPPyOTFPrNlMBA7TP5BqH5N8Y25jQB2', 'AVALIADOR'),
+('2026-05-30', '2026-05-30', 'proponente@portal.to.gov.br', 'Proponente Tocantins',
+ '$2a$10$n1caugbb0qqeX8zoO0ED9exPPyOTFPrNlMBA7TP5BqH5N8Y25jQB2', 'PROPONENTE');
 
 INSERT INTO natureza_juridica (`codigo`, `nome`) VALUES
 ('101-5', 'Órgão Público do Poder Executivo Federal'),
