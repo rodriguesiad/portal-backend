@@ -1,10 +1,11 @@
 package portal.editais.service.orgaoproponente;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import portal.editais.dto.orgao.OrgaoProponenteResponseDTO;
-import portal.editais.entity.OrgaoProponente;
 import portal.editais.repository.OrgaoProponenteRepository;
 
 @Service
@@ -22,8 +23,8 @@ public class OrgaoProponenteServiceImpl implements OrgaoProponenteService {
     @Transactional(readOnly = true)
     public List<OrgaoProponenteResponseDTO> listarOrgaosProponentesAtivos() {
         return orgaoProponenteRepository.findByEstadoSiglaAndAtivoTrueOrderByNomeAsc(SIGLA_TOCANTINS)
-            .stream()
-            .map(OrgaoProponenteResponseDTO::toResponse)
-            .toList();
+                .stream()
+                .map(OrgaoProponenteResponseDTO::toResponse)
+                .toList();
     }
 }
