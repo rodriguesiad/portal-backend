@@ -1,5 +1,9 @@
 package portal.editais.config.security.token;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -8,11 +12,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import portal.editais.entity.User;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 
 /**
  * Serviço responsável pela geração e validação de tokens JWT.
@@ -33,7 +32,6 @@ public class TokenService {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .subject(user.getId().toString())
                 .claim("profile", user.getProfile())
-                .claim("nome", user.getName())
                 .claim("email", user.getEmail())
                 .issuedAt(Instant.now())
                 .expiresAt(expirationDate())

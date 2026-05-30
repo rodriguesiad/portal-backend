@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import portal.editais.config.exception.ApiException;
 import portal.editais.dto.user.UserDTO;
-import portal.editais.dto.user.UserUpdateDTO;
 import portal.editais.entity.User;
 import portal.editais.enumeration.Profile;
 import portal.editais.repository.UserRepository;
@@ -35,25 +34,14 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User();
-        user.setName(dto.name());
+        user.setNome(dto.nome());
         user.setEmail(dto.email());
-        user.setProfile(Profile.USER);
+        user.setProfile(Profile.PROPONENTE);
 
         String password = passwordEncoder.encode(dto.password());
         user.setPassword(password);
 
         return repository.save(user);
-    }
-
-    @Override
-    @Transactional
-    public User update(Integer id, UserUpdateDTO dto) throws ApiException {
-        this.validateUser(id);
-
-        User entity = repository.findById(id).orElseThrow(() -> new ApiException("Usuário não encontrado: " + id));
-        entity.setName(dto.name());
-
-        return repository.save(entity);
     }
 
     @Override
@@ -64,12 +52,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getLoggedInUser() throws ApiException {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    private void validateUser(Integer id) throws ApiException {
-        User loggedInUser = getLoggedInUser();
-        if (!loggedInUser.getId().equals(id)) {
-            throw new ApiException("Ação restrita ao dono do registro.");
-        }
     }
 }

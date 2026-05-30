@@ -2,13 +2,10 @@ package portal.editais.service.user;
 
 import portal.editais.config.exception.ApiException;
 import portal.editais.dto.user.UserDTO;
-import portal.editais.dto.user.UserUpdateDTO;
 import portal.editais.entity.User;
 
 public interface UserService {
     User create(UserDTO dto) throws ApiException;
-
-    User update(Integer id, UserUpdateDTO dto) throws ApiException;
 
     User findById(Integer id) throws ApiException;
 

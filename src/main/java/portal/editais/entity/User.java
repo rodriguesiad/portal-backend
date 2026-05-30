@@ -38,7 +38,7 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false, length = 200)
-    private String name;
+    private String nome;
 
     @Column(nullable = false, length = 200, unique = true)
     private String email;
@@ -62,11 +62,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.profile.equals(Profile.ADMIN)) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        if (this.profile.equals(Profile.ADMINISTRADOR)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"),
+                    new SimpleGrantedAuthority("ROLE_PROPONENTE"));
         }
 
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_PROPONENTE"));
     }
 
     @Override

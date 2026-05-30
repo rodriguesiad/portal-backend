@@ -8,7 +8,7 @@ public record UserResponseDTO(
         Integer id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String name,
+        String nome,
         String email) {
 
     public static UserResponseDTO toResponse(User entity) {
@@ -16,7 +16,7 @@ public record UserResponseDTO(
                 entity.getId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
-                entity.getName(),
+                entity.getNome(),
                 entity.getEmail());
     }
 

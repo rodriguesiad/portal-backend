@@ -23,8 +23,6 @@ import java.util.Date;
  * Configuração de segurança para a criação e decodificação de tokens JWT.
  * Esta classe fornece os beans necessários para codificar e decodificar tokens JWT
  * usando o algoritmo HMAC SHA-256 e uma chave secreta configurada.
- *
- * @author Iad Rodrigues
  */
 @Configuration
 public class JWTConfig {

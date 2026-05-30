@@ -61,11 +61,11 @@ public class SecurityConfigurations implements WebMvcConfigurer {
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/users/**").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/natureza-juridicas/**").permitAll();
                     request.requestMatchers(
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
-                            "/swagger-ui.html"
-                    ).permitAll();
+                            "/swagger-ui.html").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .logout(logout -> {

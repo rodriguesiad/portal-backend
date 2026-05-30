@@ -7,11 +7,11 @@ import jakarta.validation.constraints.Size;
 public record UserDTO(
                 @NotBlank(message = "O campo nome não pode ser vazio.")
                 @Size(max = 200, message = "O campo nome não pode ter mais de 200 caracteres.")
-                String name,
+                String nome,
 
                 @Email
                 @NotBlank(message = "O campo e-mail não pode ser vazio.")
-                @Size(max = 200, message = "O campo email não pode ter mais de 200 caracteres.")
+                @Size(max = 200, message = "O campo e-mail não pode ter mais de 200 caracteres.")
                 String email,
 
                 @NotBlank(message = "O campo senha não pode ser vazio.")
