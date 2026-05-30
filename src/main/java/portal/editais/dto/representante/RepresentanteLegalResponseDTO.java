@@ -1,4 +1,4 @@
-package portal.editais.dto.subprojeto.instituicao.representante;
+package portal.editais.dto.representante;
 
 import portal.editais.entity.RepresentanteLegal;
 

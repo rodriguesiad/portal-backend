@@ -2,18 +2,18 @@ package portal.editais.dto.subprojeto;
 
 import java.time.LocalDateTime;
 
-import portal.editais.dto.subprojeto.instituicao.InstituicaoResponseDTO;
+import portal.editais.dto.instituicao.InstituicaoResponseDTO;
 import portal.editais.dto.user.UserResponseDTO;
 import portal.editais.entity.Subprojeto;
 
-public record SubprojetoResponseDTO(
+public record SubprojetoResponseEtapa1DTO(
         Integer id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         InstituicaoResponseDTO instituicao,
         UserResponseDTO autor) {
-    public static SubprojetoResponseDTO toResponse(Subprojeto entity) {
-        return new SubprojetoResponseDTO(
+    public static SubprojetoResponseEtapa1DTO toResponse(Subprojeto entity) {
+        return new SubprojetoResponseEtapa1DTO(
                 entity.getId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),

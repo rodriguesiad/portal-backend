@@ -1,4 +1,4 @@
-package portal.editais.dto.subprojeto.instituicao.representante;
+package portal.editais.dto.representante;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

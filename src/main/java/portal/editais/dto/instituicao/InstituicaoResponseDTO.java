@@ -1,9 +1,9 @@
-package portal.editais.dto.subprojeto.instituicao;
+package portal.editais.dto.instituicao;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import portal.editais.dto.subprojeto.instituicao.representante.RepresentanteLegalResponseDTO;
+import portal.editais.dto.representante.RepresentanteLegalResponseDTO;
 import portal.editais.entity.Instituicao;
 
 public record InstituicaoResponseDTO(

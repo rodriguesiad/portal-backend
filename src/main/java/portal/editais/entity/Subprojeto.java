@@ -40,6 +40,18 @@ public class Subprojeto {
     @JoinColumn(name = "id_instituicao", nullable = false)
     private Instituicao instituicao;
 
+    @Column(length = 200)
+    private String nomeSubprojeto;
+
+    @Column()
+    private Integer edital; // TODO: Alterar para entidade Edital
+
+    @Column(length = 1500)
+    private String resumo;
+
+    @Column(length = 1500)
+    private String justificativaMerito;
+
     @PrePersist
     protected void prePersist() {
         this.createdAt = LocalDateTime.now();
