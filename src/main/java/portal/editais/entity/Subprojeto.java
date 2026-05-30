@@ -61,6 +61,10 @@ public class Subprojeto {
     @JoinColumn(name = "id_publico_beneficiado")
     private PublicoBeneficiado publicoBeneficiado;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_plano_execucao")
+    private PlanoExecucao planoExecucao;
+
     @PrePersist
     protected void prePersist() {
         this.createdAt = LocalDateTime.now();

@@ -14,10 +14,12 @@ import portal.editais.dto.subprojeto.SubprojetoEtapa1DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa2DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa3DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa4DTO;
+import portal.editais.dto.subprojeto.SubprojetoEtapa5DTO;
 import portal.editais.dto.subprojeto.SubprojetoResponseEtapa1DTO;
 import portal.editais.dto.subprojeto.SubprojetoResponseEtapa2DTO;
 import portal.editais.dto.subprojeto.SubprojetoResponseEtapa3DTO;
 import portal.editais.dto.subprojeto.SubprojetoResponseEtapa4DTO;
+import portal.editais.dto.subprojeto.SubprojetoResponseEtapa5DTO;
 import portal.editais.entity.Subprojeto;
 import portal.editais.service.subprojeto.SubprojetoService;
 
@@ -69,6 +71,16 @@ public class SubprojetoController {
 
         Subprojeto entity = service.implementaSubprojetoEtapa4(id, dto);
         return ResponseEntity.ok(SubprojetoResponseEtapa4DTO.toResponse(entity));
+    }
+
+    @Secured({ "ROLE_PROPONENTE" })
+    @PostMapping("/etapa-5/{id}")
+    @Operation(description = "Inserindo etapa 5 da submissão de subprojeto")
+    public ResponseEntity<SubprojetoResponseEtapa5DTO> createPublicoBeneficiado(
+            @Valid @RequestBody SubprojetoEtapa5DTO dto, @PathVariable Integer id) throws Exception {
+
+        Subprojeto entity = service.implementaSubprojetoEtapa5(id, dto);
+        return ResponseEntity.ok(SubprojetoResponseEtapa5DTO.toResponse(entity));
     }
 
 }

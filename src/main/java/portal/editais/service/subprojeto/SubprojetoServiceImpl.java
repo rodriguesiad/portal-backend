@@ -1,6 +1,8 @@
 package portal.editais.service.subprojeto;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,12 @@ import portal.editais.dto.subprojeto.SubprojetoEtapa1DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa2DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa3DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa4DTO;
+import portal.editais.dto.subprojeto.SubprojetoEtapa5DTO;
+import portal.editais.entity.Atividade;
 import portal.editais.entity.Instituicao;
 import portal.editais.entity.Localizacao;
 import portal.editais.entity.Municipio;
+import portal.editais.entity.PlanoExecucao;
 import portal.editais.entity.PublicoBeneficiado;
 import portal.editais.entity.Subprojeto;
 import portal.editais.entity.User;
@@ -108,6 +113,41 @@ public class SubprojetoServiceImpl implements SubprojetoService {
 
         publicoBeneficiado.setSubprojeto(subprojeto);
         subprojeto.setPublicoBeneficiado(publicoBeneficiado);
+
+        return repository.save(subprojeto);
+    }
+
+    @Override
+    @Transactional
+    public Subprojeto implementaSubprojetoEtapa5(Integer id, SubprojetoEtapa5DTO dto) throws ApiException {
+        Subprojeto subprojeto = findById(id);
+        this.validateAutor(subprojeto.getAutor().getId());
+
+        PlanoExecucao planoExecucao = new PlanoExecucao();
+
+        planoExecucao.setObjetivoGeral(dto.planoExecucao().objetivoGeral());
+        planoExecucao.setObjetivoEspecifico(dto.planoExecucao().objetivoEspecifico());
+
+        List<Atividade> atividades = dto.planoExecucao().atividades()
+                .stream()
+                .map(atividadeDTO -> {
+                    Atividade atividade = new Atividade();
+
+                    atividade.setDescricao(atividadeDTO.descricao());
+                    atividade.setResponsavel(atividadeDTO.responsavel());
+                    atividade.setDataInicio(atividadeDTO.dataInicio());
+                    atividade.setDataFim(atividadeDTO.dataFim());
+
+                    atividade.setPlanoExecucao(planoExecucao);
+
+                    return atividade;
+                })
+                .collect(Collectors.toList());
+
+        planoExecucao.setAtividades(atividades);
+
+        planoExecucao.setSubprojeto(subprojeto);
+        subprojeto.setPlanoExecucao(planoExecucao);
 
         return repository.save(subprojeto);
     }
