@@ -1,5 +1,7 @@
 package portal.editais.service.subprojeto;
 
+import java.util.Optional;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,11 @@ import portal.editais.dto.subprojeto.SubprojetoEtapa3DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa4DTO;
 import portal.editais.entity.Instituicao;
 import portal.editais.entity.Localizacao;
+import portal.editais.entity.Municipio;
 import portal.editais.entity.PublicoBeneficiado;
 import portal.editais.entity.Subprojeto;
 import portal.editais.entity.User;
+import portal.editais.repository.MunicipioRepository;
 import portal.editais.repository.SubprojetoRepository;
 import portal.editais.service.instituicao.InstituicaoService;
 
@@ -22,10 +26,13 @@ public class SubprojetoServiceImpl implements SubprojetoService {
 
     private SubprojetoRepository repository;
     private InstituicaoService instituicaoService;
+    private MunicipioRepository municipioRepository;
 
-    protected SubprojetoServiceImpl(SubprojetoRepository repository, InstituicaoService instituicaoService) {
+    protected SubprojetoServiceImpl(SubprojetoRepository repository, InstituicaoService instituicaoService,
+            MunicipioRepository municipioRepository) {
         this.repository = repository;
         this.instituicaoService = instituicaoService;
+        this.municipioRepository = municipioRepository;
     }
 
     @Override
@@ -60,10 +67,16 @@ public class SubprojetoServiceImpl implements SubprojetoService {
         Subprojeto subprojeto = findById(id);
         this.validateAutor(subprojeto.getAutor().getId());
 
+        Optional<Municipio> municipio = municipioRepository.findById(dto.localizacao().idMunicipio());
+
+        if (municipio.isEmpty()) {
+            throw new ApiException("Município não encontrado");
+        }
+
         Localizacao localizacao = new Localizacao();
         localizacao.setLatitude(dto.localizacao().latitude());
         localizacao.setLongitude(dto.localizacao().longitude());
-        localizacao.setMunicipio(dto.localizacao().municipio());
+        localizacao.setMunicipio(municipio.get());
         localizacao.setComunidade(dto.localizacao().comunidade());
 
         localizacao.setSubprojeto(subprojeto);

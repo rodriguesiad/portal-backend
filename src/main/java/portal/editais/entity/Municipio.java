@@ -8,34 +8,24 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "localizacao")
-public class Localizacao {
+@Table(name = "municipio")
+public class Municipio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer id;
 
-    @Column(length = 100)
-    private String latitude;
-
-    @Column(length = 100)
-    private String longitude;
+    @Column(name = "nome", length = 150)
+    private String nome;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_municipio")
-    private Municipio municipio;
-
-    @Column(length = 500)
-    private String comunidade;
-
-    @OneToOne(mappedBy = "localizacao")
-    private Subprojeto subprojeto;
+    @JoinColumn(name = "id_regiao_imediata")
+    private RegiaoImediata regiaoImediata;
 
 }
