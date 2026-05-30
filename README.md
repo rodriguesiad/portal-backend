@@ -1,4 +1,4 @@
-# Portal de Editais — Backedn
+# Portal de Editais — API
 
 Este projeto é a API do desafio FAPTGULHAS - HACKAMARH . Seu objetivo é democratizar o acesso ao mercado de carbono jurisdicional (JREDD+) no Tocantins.A plataforma atua como uma ponte de alta integridade que conecta proponentes aos fundos globais, garantindo segurança jurídica, transparência matemática e blindagem contra fraudes e greenwashing por meio de evidências georreferenciadas auditáveis e automações de triagem.
 
