@@ -1,6 +1,72 @@
 INSERT INTO user
-(`createdAt`, `updatedAt`, `email`, `name`, `password`, `profile`)
+(`createdAt`, `updatedAt`, `nome`,  `email`, `password`, `profile`)
 VALUES
 -- Usuário Principal
-('2026-05-30', '2026-05-30', 'alexandre.caio.ramos@gmail.com', 'Caio Alexandre',
- '$2a$10$n1caugbb0qqeX8zoO0ED9exPPyOTFPrNlMBA7TP5BqH5N8Y25jQB2', 'USER');
+('2026-05-30', '2026-05-30', 'Caio Alexandre', 'alexandre.caio.ramos@gmail.com',
+ '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'ADMINISTRADOR');
+
+INSERT INTO natureza_juridica (`codigo`, `nome`) VALUES
+('101-5', 'Órgão Público do Poder Executivo Federal'),
+('102-3', 'Órgão Público do Poder Executivo Estadual ou do Distrito Federal'),
+('103-1', 'Órgão Público do Poder Executivo Municipal'),
+('104-0', 'Órgão Público do Poder Legislativo Federal'),
+('105-8', 'Órgão Público do Poder Legislativo Estadual ou do Distrito Federal'),
+('106-6', 'Órgão Público do Poder Legislativo Municipal'),
+('107-4', 'Órgão Público do Poder Judiciário Federal'),
+('108-2', 'Órgão Público do Poder Judiciário Estadual'),
+('110-4', 'Autarquia Federal'),
+('111-2', 'Autarquia Estadual ou do Distrito Federal'),
+('112-0', 'Autarquia Municipal'),
+('113-9', 'Fundação Federal'),
+('114-7', 'Fundação Estadual ou do Distrito Federal'),
+('115-5', 'Fundação Municipal'),
+('116-3', 'Órgão Público Autônomo da União'),
+('117-1', 'Órgão Público Autônomo Estadual ou do Distrito Federal'),
+('118-0', 'Órgão Público Autônomo Municipal'),
+
+('201-1', 'Empresa Pública'),
+('203-8', 'Sociedade de Economia Mista'),
+('204-6', 'Sociedade Anônima Aberta'),
+('205-4', 'Sociedade Anônima Fechada'),
+('206-2', 'Sociedade Empresária Limitada'),
+('207-6', 'Sociedade Empresária em Nome Coletivo'),
+('208-9', 'Sociedade Empresária em Comandita Simples'),
+('209-7', 'Sociedade Empresária em Comandita por Ações'),
+('210-0', 'Sociedade Mercantil de Capital e Indústria (extinta pelo NCC/2002)'),
+('212-7', 'Sociedade Empresária em Conta de Participação'),
+('213-5', 'Empresário (Individual)'),
+('214-3', 'Cooperativa'),
+('215-1', 'Consórcio de Sociedades'),
+('216-0', 'Grupo de Sociedades'),
+('217-8', 'Estabelecimento, no Brasil, de Sociedade Estrangeira'),
+('219-4', 'Estabelecimento, no Brasil, de Empresa Binacional Argentino-Brasileira'),
+('220-8', 'Entidade Binacional Itaipu'),
+('221-6', 'Empresa Domiciliada no Exterior'),
+('222-4', 'Clube/Fundo de Investimento'),
+('223-2', 'Sociedade Simples Pura'),
+('224-0', 'Sociedade Simples Limitada'),
+('225-9', 'Sociedade em Nome Coletivo'),
+('226-7', 'Sociedade em Comandita Simples'),
+('227-5', 'Sociedade Simples em Conta de Participação'),
+('230-5', 'Empresa Individual de Responsabilidade Limitada'),
+
+('303-4', 'Serviço Notarial e Registral (Cartório)'),
+('304-2', 'Organização Social'),
+('305-0', 'Organização da Sociedade Civil de Interesse Público (Oscip)'),
+('306-9', 'Outras Formas de Fundações Mantidas com Recursos Privados'),
+('307-7', 'Serviço Social Autônomo'),
+('308-5', 'Condomínio Edilícios'),
+('309-3', 'Unidade Executora (Programa Dinheiro Direto na Escola)'),
+('310-7', 'Comissão de Conciliação Prévia'),
+('311-5', 'Entidade de Mediação e Arbitragem'),
+('312-3', 'Partido Político'),
+('313-1', 'Entidade Sindical'),
+('320-4', 'Estabelecimento, no Brasil, de Fundação ou Associação Estrangeiras'),
+('321-2', 'Fundação ou Associação Domiciliada no Exterior'),
+('399-9', 'Outras Formas de Associação'),
+
+('401-4', 'Empresa Individual Imobiliária'),
+('402-2', 'Segurado Especial'),
+('408-1', 'Contribuinte Individual'),
+
+('500-2', 'Organização Internacional e Outras Instituições Extraterritoriais');
