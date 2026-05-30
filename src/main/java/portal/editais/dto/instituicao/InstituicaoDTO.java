@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import portal.editais.dto.representante.RepresentanteLegalDTO;
 
@@ -16,6 +17,7 @@ public record InstituicaoDTO(
 
                 @NotBlank(message = "O campo CNPJ não pode ser vazio.") @Size(max = 18, message = "O campo CNPJ não pode ter mais de 18 caracteres.") String cnpj,
 
+                @PastOrPresent(message = "A data de fundação não pode ser futura.")
                 LocalDate dataFundacao,
 
                 @NotNull(message = "O campo natureza jurídica é obrigatório.") Integer idNaturezaJuridica,

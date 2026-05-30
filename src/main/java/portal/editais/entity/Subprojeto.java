@@ -2,6 +2,7 @@ package portal.editais.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -51,6 +52,14 @@ public class Subprojeto {
 
     @Column(length = 1500)
     private String justificativaMerito;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_localizacao")
+    private Localizacao localizacao;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_publico_beneficiado")
+    private PublicoBeneficiado publicoBeneficiado;
 
     @PrePersist
     protected void prePersist() {

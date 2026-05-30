@@ -5,6 +5,13 @@ VALUES
 ('2026-05-30', '2026-05-30', 'Caio Alexandre', 'alexandre.caio.ramos@gmail.com',
  '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'ADMINISTRADOR');
 
+ INSERT INTO user
+(`createdAt`, `updatedAt`, `nome`,  `email`, `password`, `profile`)
+VALUES
+-- Usuário Principal
+('2026-05-30', '2026-05-30', 'José Maria', 'jose@gmail.com',
+ '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'PROPONENTE');
+
 INSERT INTO natureza_juridica (`codigo`, `nome`) VALUES
 ('101-5', 'Órgão Público do Poder Executivo Federal'),
 ('102-3', 'Órgão Público do Poder Executivo Estadual ou do Distrito Federal'),

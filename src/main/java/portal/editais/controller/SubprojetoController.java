@@ -12,8 +12,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import portal.editais.dto.subprojeto.SubprojetoEtapa1DTO;
 import portal.editais.dto.subprojeto.SubprojetoEtapa2DTO;
+import portal.editais.dto.subprojeto.SubprojetoEtapa3DTO;
+import portal.editais.dto.subprojeto.SubprojetoEtapa4DTO;
 import portal.editais.dto.subprojeto.SubprojetoResponseEtapa1DTO;
 import portal.editais.dto.subprojeto.SubprojetoResponseEtapa2DTO;
+import portal.editais.dto.subprojeto.SubprojetoResponseEtapa3DTO;
+import portal.editais.dto.subprojeto.SubprojetoResponseEtapa4DTO;
 import portal.editais.entity.Subprojeto;
 import portal.editais.service.subprojeto.SubprojetoService;
 
@@ -45,6 +49,26 @@ public class SubprojetoController {
 
         Subprojeto entity = service.implementaSubprojetoEtapa2(id, dto);
         return ResponseEntity.ok(SubprojetoResponseEtapa2DTO.toResponse(entity));
+    }
+
+    @Secured({ "ROLE_PROPONENTE" })
+    @PostMapping("/etapa-3/{id}")
+    @Operation(description = "Inserindo etapa 3 da submissão de subprojeto")
+    public ResponseEntity<SubprojetoResponseEtapa3DTO> createLocalizacao(
+            @Valid @RequestBody SubprojetoEtapa3DTO dto, @PathVariable Integer id) throws Exception {
+
+        Subprojeto entity = service.implementaSubprojetoEtapa3(id, dto);
+        return ResponseEntity.ok(SubprojetoResponseEtapa3DTO.toResponse(entity));
+    }
+
+    @Secured({ "ROLE_PROPONENTE" })
+    @PostMapping("/etapa-4/{id}")
+    @Operation(description = "Inserindo etapa 4 da submissão de subprojeto")
+    public ResponseEntity<SubprojetoResponseEtapa4DTO> createPublicoBeneficiado(
+            @Valid @RequestBody SubprojetoEtapa4DTO dto, @PathVariable Integer id) throws Exception {
+
+        Subprojeto entity = service.implementaSubprojetoEtapa4(id, dto);
+        return ResponseEntity.ok(SubprojetoResponseEtapa4DTO.toResponse(entity));
     }
 
 }

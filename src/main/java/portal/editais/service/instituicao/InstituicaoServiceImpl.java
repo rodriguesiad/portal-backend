@@ -32,6 +32,10 @@ public class InstituicaoServiceImpl implements InstituicaoService {
     public Instituicao create(InstituicaoDTO dto) throws ApiException {
         Optional<NaturezaJuridica> naturezaJuridica = naturezaJuridicaRepository.findById(dto.idNaturezaJuridica());
 
+        if (naturezaJuridica.isEmpty()) {
+            throw new ApiException("Natureza jurídica não encontrada.");
+        }
+
         Instituicao registro = new Instituicao();
         registro.setNomeFantasia(dto.nomeFantasia());
         registro.setRazaoSocial(dto.razaoSocial());
