@@ -2,6 +2,7 @@ package portal.editais.service.documento;
 
 import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
+import portal.editais.dto.documento.DocumentoDownloadDTO;
 import portal.editais.dto.documento.DocumentoResponseDTO;
 import portal.editais.entity.Documento;
 import portal.editais.enumeration.ContextoDocumento;
@@ -11,5 +12,5 @@ public interface DocumentoService {
 
     DocumentoResponseDTO enviarDocumento(MultipartFile arquivo, ContextoDocumento contexto);
 
-    DocumentoResponseDTO buscarDocumentoPorId(UUID id);
+    DocumentoDownloadDTO baixarDocumento(UUID id);
 }

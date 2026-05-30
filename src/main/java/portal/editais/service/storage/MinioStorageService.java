@@ -1,6 +1,7 @@
 package portal.editais.service.storage;
 
 import io.minio.BucketExistsArgs;
+import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -66,6 +67,20 @@ public class MinioStorageService implements StorageService {
             );
         } catch (Exception exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao salvar documento no MinIO.");
+        }
+    }
+
+    @Override
+    public byte[] baixar(String bucket, String objectKey) {
+        try (var stream = minioClient.getObject(
+            GetObjectArgs.builder()
+                .bucket(bucket)
+                .object(objectKey)
+                .build()
+        )) {
+            return stream.readAllBytes();
+        } catch (Exception exception) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Arquivo não encontrado no MinIO.");
         }
     }
 

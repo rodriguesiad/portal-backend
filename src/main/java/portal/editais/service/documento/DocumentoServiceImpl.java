@@ -1,15 +1,18 @@
 package portal.editais.service.documento;
 
+import java.util.UUID;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import portal.editais.dto.documento.DocumentoDownloadDTO;
 import portal.editais.dto.documento.DocumentoResponseDTO;
 import portal.editais.entity.Documento;
 import portal.editais.enumeration.ContextoDocumento;
 import portal.editais.repository.DocumentoRepository;
 import portal.editais.service.storage.ArquivoArmazenado;
 import portal.editais.service.storage.StorageService;
-import java.util.UUID;
 
 @Service
 public class DocumentoServiceImpl implements DocumentoService {
@@ -58,23 +61,10 @@ public class DocumentoServiceImpl implements DocumentoService {
 
     @Override
     @Transactional(readOnly = true)
-    public DocumentoResponseDTO buscarDocumentoPorId(UUID id) {
+    public DocumentoDownloadDTO baixarDocumento(UUID id) {
         Documento documento = documentoRepository.findById(id)
-            .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
-                org.springframework.http.HttpStatus.NOT_FOUND,
-                "Documento não encontrado."
-            ));
-
-        return new DocumentoResponseDTO(
-            documento.getId(),
-            documento.getNomeOriginal(),
-            documento.getTipoConteudo(),
-            documento.getTamanhoBytes(),
-            documento.getBucket(),
-            documento.getObjectKey(),
-            documento.getUrl(),
-            documento.getContexto(),
-            documento.getCriadoEm()
-        );
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Documento não encontrado."));
+        byte[] conteudo = storageService.baixar(documento.getBucket(), documento.getObjectKey());
+        return new DocumentoDownloadDTO(documento.getNomeOriginal(), documento.getTipoConteudo(), conteudo);
     }
 }
