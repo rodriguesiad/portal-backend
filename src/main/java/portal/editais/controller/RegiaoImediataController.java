@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import portal.editais.dto.edital.RegiaoImediataResponseDTO;
+import portal.editais.dto.regiaoimediata.RegiaoImediataResponseDTO;
 import portal.editais.service.regiaoimediata.RegiaoImediataService;
 
 @RestController

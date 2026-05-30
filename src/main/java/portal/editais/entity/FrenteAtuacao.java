@@ -23,7 +23,7 @@ public class FrenteAtuacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, unique = true, length = 80)
     private String codigo;
