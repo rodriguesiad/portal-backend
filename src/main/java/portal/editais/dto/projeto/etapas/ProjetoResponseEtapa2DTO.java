@@ -1,0 +1,19 @@
+package portal.editais.dto.projeto.etapas;
+
+import portal.editais.entity.Projeto;
+
+public record ProjetoResponseEtapa2DTO(
+                Integer id,
+                String nomeProjeto,
+                Integer edital,
+                String resumo,
+                String justificativaMerito) {
+        public static ProjetoResponseEtapa2DTO toResponse(Projeto entity) {
+                return new ProjetoResponseEtapa2DTO(
+                                entity.getId(),
+                                entity.getNomeProjeto(),
+                                entity.getEdital(),
+                                entity.getResumo(),
+                                entity.getJustificativaMerito());
+        }
+}

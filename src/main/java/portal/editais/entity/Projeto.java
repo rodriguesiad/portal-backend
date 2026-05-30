@@ -1,6 +1,5 @@
 package portal.editais.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
@@ -20,8 +19,8 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "instituicao")
-public class Instituicao {
+@Table(name = "projeto")
+public class Projeto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,40 +33,45 @@ public class Instituicao {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_autor")
+    private User autor;
+
+    @OneToOne
+    @JoinColumn(name = "id_instituicao", nullable = false)
+    private Instituicao instituicao;
+
     @Column(length = 200)
-    private String nomeFantasia;
-
-    @Column(nullable = false, length = 200)
-    private String razaoSocial;
-
-    @Column(nullable = false, length = 18)
-    private String cnpj;
+    private String nomeProjeto;
 
     @Column()
-    private LocalDate dataFundacao;
+    private Integer edital; // TODO: Alterar para entidade Edital
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_natureza_juridica")
-    private NaturezaJuridica naturezaJuridica;
+    @Column(length = 1500)
+    private String resumo;
 
-    @Column(length = 500)
-    private String areaAtuacao;
-
-    @Column(length = 255)
-    private String site;
-
-    @Column(length = 500)
-    private String redesSociais;
+    @Column(length = 1500)
+    private String justificativaMerito;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id_representante_legal")
-    private RepresentanteLegal representanteLegal;
+    @JoinColumn(name = "id_localizacao")
+    private Localizacao localizacao;
 
-    @Column(length = 500)
-    private String situacao;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_publico_beneficiado")
+    private PublicoBeneficiado publicoBeneficiado;
 
-    @OneToOne(mappedBy = "instituicao")
-    private Projeto projeto;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_plano_execucao")
+    private PlanoExecucao planoExecucao;
+
+    private Boolean declarouVeracidadeInformacoes;
+
+    private Boolean autorizouTratamentoDadosLgpd;
+
+    private Boolean comprometeuPrestacaoContas;
+
+    private Boolean autorizouMonitoramentoAuditoria;
 
     @PrePersist
     protected void prePersist() {

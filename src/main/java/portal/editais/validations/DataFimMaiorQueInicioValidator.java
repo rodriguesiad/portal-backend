@@ -2,7 +2,7 @@ package portal.editais.validations;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import portal.editais.dto.atividade.AtividadeDTO;
+import portal.editais.dto.projeto.atividade.AtividadeDTO;
 
 public class DataFimMaiorQueInicioValidator
         implements ConstraintValidator<DataFimMaiorQueInicio, AtividadeDTO> {

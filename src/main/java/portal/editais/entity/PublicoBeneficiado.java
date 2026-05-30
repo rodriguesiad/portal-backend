@@ -55,6 +55,6 @@ public class PublicoBeneficiado {
     private String descricaoAplicacaoBeneficio;
 
     @OneToOne(mappedBy = "publicoBeneficiado")
-    private Subprojeto subprojeto;
+    private Projeto projeto;
 
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import portal.editais.config.exception.ApiException;
-import portal.editais.dto.natureza.NaturezaJuridicaResponseDTO;
+import portal.editais.dto.projeto.natureza.NaturezaJuridicaResponseDTO;
 import portal.editais.service.natureza.juridica.NaturezaJuridicaService;
 
 @RestController

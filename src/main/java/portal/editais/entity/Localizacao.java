@@ -36,6 +36,6 @@ public class Localizacao {
     private String comunidade;
 
     @OneToOne(mappedBy = "localizacao")
-    private Subprojeto subprojeto;
+    private Projeto projeto;
 
 }

@@ -33,6 +33,6 @@ public class PlanoExecucao {
     private List<Atividade> atividades;
 
     @OneToOne(mappedBy = "planoExecucao")
-    private Subprojeto subprojeto;
+    private Projeto projeto;
 
 }
