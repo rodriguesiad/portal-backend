@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
@@ -25,6 +26,7 @@ import portal.editais.service.projeto.ProjetoService;
 
 @RestController
 @RequestMapping("/projetos")
+@Tag(name = "Projetos")
 public class ProjetoController {
 
     private ProjetoService service;

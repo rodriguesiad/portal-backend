@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import portal.editais.entity.OrgaoProponente;
 
-public interface OrgaoProponenteRepository extends JpaRepository<OrgaoProponente, Long> {
-    Optional<OrgaoProponente> findByIdAndAtivoTrue(Long id);
+public interface OrgaoProponenteRepository extends JpaRepository<OrgaoProponente, Integer> {
+    Optional<OrgaoProponente> findByIdAndAtivoTrue(Integer id);
 
     List<OrgaoProponente> findByEstadoSiglaAndAtivoTrueOrderByNomeAsc(String sigla);
 

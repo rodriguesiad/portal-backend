@@ -1,6 +1,8 @@
 package portal.editais.enumeration;
 
 public enum Profile {
+    PROPONENTE,
     ADMINISTRADOR,
-    PROPONENTE
+    AVALIADOR,
+    AUDITOR
 }

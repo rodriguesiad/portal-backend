@@ -23,7 +23,21 @@ services:
     depends_on:
       mysqldb:
         condition: service_healthy
+      minio:
+        condition: service_started
     env_file: .env
+    networks:
+      - portal_editais_network
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file: .env
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
     networks:
       - portal_editais_network
 
@@ -33,3 +47,4 @@ networks:
 
 volumes:
   mysql-data:
+  minio-data:

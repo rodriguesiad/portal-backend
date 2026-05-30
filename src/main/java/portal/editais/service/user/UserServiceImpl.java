@@ -1,5 +1,6 @@
 package portal.editais.service.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +43,10 @@ public class UserServiceImpl implements UserService {
         user.setPassword(password);
 
         return repository.save(user);
+    }
+
+    public List<User> listarUsuariosPorPerfil(Profile profile) {
+        return repository.findByProfile(profile).stream().toList();
     }
 
     @Override

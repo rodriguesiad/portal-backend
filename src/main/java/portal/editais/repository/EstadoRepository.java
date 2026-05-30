@@ -4,7 +4,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import portal.editais.entity.Estado;
 
-public interface EstadoRepository extends JpaRepository<Estado, Long> {
+public interface EstadoRepository extends JpaRepository<Estado, Integer> {
     Optional<Estado> findBySiglaAndAtivoTrue(String sigla);
 
     boolean existsBySigla(String sigla);

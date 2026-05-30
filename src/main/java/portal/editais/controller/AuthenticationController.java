@@ -1,5 +1,6 @@
 package portal.editais.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import portal.editais.config.security.token.TokenJWTResponse;
 import portal.editais.config.security.token.TokenService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Autenticação")
 public class AuthenticationController {
 
     private AuthenticationManager manager;

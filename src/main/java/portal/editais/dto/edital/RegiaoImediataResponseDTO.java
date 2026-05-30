@@ -3,7 +3,7 @@ package portal.editais.dto.edital;
 import portal.editais.entity.RegiaoImediata;
 
 public record RegiaoImediataResponseDTO(
-        Long id,
+        Integer id,
         String codigo,
         String nome) {
 
