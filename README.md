@@ -27,7 +27,7 @@ docker-compose up --build
 Isso irá subir:
 
 - 🔸 **MySQL** na porta `3309` (externa) e `3306` (interna no container).
-- 🔸 **API Micronaut** na porta `8282`.
+- 🔸 **API** na porta `8282`.
 
 ---
 ## 🔗 📖 Documentação da API (Swagger)
