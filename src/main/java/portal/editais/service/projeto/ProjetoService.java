@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import portal.editais.config.exception.ApiException;
 import portal.editais.dto.projeto.ProjetoFilterDTO;
 import portal.editais.dto.projeto.ProjetoIndicadoresDTO;
+import portal.editais.dto.projeto.EvidenciaDTO;
+import portal.editais.dto.projeto.ProjetoResponseDTO;
+import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
@@ -13,6 +16,7 @@ import portal.editais.dto.projeto.etapas.ProjetoEtapa4DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa5DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa6DTO;
 import portal.editais.entity.Projeto;
+import java.util.List;
 
 public interface ProjetoService {
     Projeto implementaProjetoEtapa1(ProjetoEtapa1DTO dto) throws ApiException;
@@ -36,4 +40,14 @@ public interface ProjetoService {
     ProjetoIndicadoresDTO obterIndicadoresDoAutor() throws ApiException;
 
     ProjetoIndicadoresDTO obterIndicadoresGerais() throws ApiException;
+
+    List<ProjetoResponseDTO> listarProjetosDoProponente();
+
+    List<ProjetoResponseDTO> listarProjetosDoAuditor();
+
+    ProjetoResponseDTO buscarProjetoResponse(Integer id);
+
+    ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto);
+
+    ProjetoResponseDTO validarEvidencia(Integer evidenciaId, ValidarEvidenciaDTO dto);
 }

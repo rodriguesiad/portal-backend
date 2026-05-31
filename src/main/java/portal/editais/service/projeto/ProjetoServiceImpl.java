@@ -7,13 +7,19 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.transaction.Transactional;
 import portal.editais.config.exception.ApiException;
+import portal.editais.dto.projeto.EvidenciaDTO;
+import portal.editais.dto.projeto.EvidenciaResponseDTO;
 import portal.editais.dto.projeto.ProjetoFilterDTO;
 import portal.editais.dto.projeto.ProjetoIndicadoresDTO;
+import portal.editais.dto.projeto.ProjetoResponseDTO;
+import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
@@ -21,7 +27,10 @@ import portal.editais.dto.projeto.etapas.ProjetoEtapa4DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa5DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa6DTO;
 import portal.editais.entity.Atividade;
+import portal.editais.entity.AtividadeProjeto;
+import portal.editais.entity.Documento;
 import portal.editais.entity.Edital;
+import portal.editais.entity.Evidencia;
 import portal.editais.entity.Instituicao;
 import portal.editais.entity.Localizacao;
 import portal.editais.entity.Municipio;
@@ -29,8 +38,13 @@ import portal.editais.entity.PlanoExecucao;
 import portal.editais.entity.Projeto;
 import portal.editais.entity.PublicoBeneficiado;
 import portal.editais.entity.User;
-import portal.editais.enumeration.SituacaoProjeto;
+import portal.editais.enumeration.ContextoDocumento;
+import portal.editais.enumeration.Profile;
+import portal.editais.enumeration.StatusProjeto;
+import portal.editais.repository.AtividadeProjetoRepository;
+import portal.editais.repository.DocumentoRepository;
 import portal.editais.repository.EditalRepository;
+import portal.editais.repository.EvidenciaRepository;
 import portal.editais.repository.MunicipioRepository;
 import portal.editais.repository.ProjetoRepository;
 import portal.editais.service.instituicao.InstituicaoService;
@@ -39,17 +53,29 @@ import portal.editais.specification.ProjetoSpecification;
 @Service
 public class ProjetoServiceImpl implements ProjetoService {
 
-    private ProjetoRepository repository;
-    private InstituicaoService instituicaoService;
-    private MunicipioRepository municipioRepository;
-    private EditalRepository editalRepository;
+    private final ProjetoRepository repository;
+    private final InstituicaoService instituicaoService;
+    private final MunicipioRepository municipioRepository;
+    private final EditalRepository editalRepository;
+    private final DocumentoRepository documentoRepository;
+    private final AtividadeProjetoRepository atividadeProjetoRepository;
+    private final EvidenciaRepository evidenciaRepository;
 
-    protected ProjetoServiceImpl(ProjetoRepository repository, InstituicaoService instituicaoService,
-            MunicipioRepository municipioRepository, EditalRepository editalRepository) {
+    protected ProjetoServiceImpl(
+            ProjetoRepository repository,
+            InstituicaoService instituicaoService,
+            MunicipioRepository municipioRepository,
+            EditalRepository editalRepository,
+            DocumentoRepository documentoRepository,
+            AtividadeProjetoRepository atividadeProjetoRepository,
+            EvidenciaRepository evidenciaRepository) {
         this.repository = repository;
         this.instituicaoService = instituicaoService;
         this.municipioRepository = municipioRepository;
         this.editalRepository = editalRepository;
+        this.documentoRepository = documentoRepository;
+        this.atividadeProjetoRepository = atividadeProjetoRepository;
+        this.evidenciaRepository = evidenciaRepository;
     }
 
     @Override
@@ -60,7 +86,6 @@ public class ProjetoServiceImpl implements ProjetoService {
 
         projeto.setInstituicao(instituicao);
         projeto.setAutor(getLoggedInUser());
-        projeto.setSituacao(SituacaoProjeto.RASCUNHO);
 
         return repository.save(projeto);
     }
@@ -72,14 +97,11 @@ public class ProjetoServiceImpl implements ProjetoService {
         validateAutor(projeto.getAutor().getId());
         validarEtapa2(projeto);
 
-        Optional<Edital> edital = editalRepository.findById(dto.idEdital());
-
-        if (edital.isEmpty()) {
-            throw new ApiException("Edital não encontrado");
-        }
+        Edital edital = editalRepository.findById(dto.idEdital())
+                .orElseThrow(() -> new ApiException("Edital nao encontrado: " + dto.idEdital()));
 
         projeto.setNomeProjeto(dto.nomeProjeto());
-        projeto.setEdital(edital.get());
+        projeto.setEdital(edital);
         projeto.setResumo(dto.resumo());
         projeto.setJustificativaMerito(dto.justificativaMerito());
 
@@ -96,7 +118,7 @@ public class ProjetoServiceImpl implements ProjetoService {
         Optional<Municipio> municipio = municipioRepository.findById(dto.localizacao().idMunicipio());
 
         if (municipio.isEmpty()) {
-            throw new ApiException("Município não encontrado");
+            throw new ApiException("Municipio nao encontrado");
         }
 
         Localizacao localizacao = new Localizacao();
@@ -186,14 +208,110 @@ public class ProjetoServiceImpl implements ProjetoService {
         projeto.setAutorizouTratamentoDadosLgpd(dto.autorizouTratamentoDadosLgpd());
         projeto.setAutorizouMonitoramentoAuditoria(dto.autorizouMonitoramentoAuditoria());
         projeto.setComprometeuPrestacaoContas(dto.comprometeuPrestacaoContas());
-        projeto.setSituacao(SituacaoProjeto.EM_ANALISE);
+        projeto.setStatus(StatusProjeto.SUBMETIDO);
 
         return repository.save(projeto);
     }
 
     @Override
     public Projeto findById(Integer id) throws ApiException {
-        return repository.findById(id).orElseThrow(() -> new ApiException("Projeto não encontrado: " + id));
+        return repository.findById(id).orElseThrow(() -> new ApiException("Projeto nao encontrado: " + id));
+    }
+
+    @Override
+    @Transactional
+    public List<ProjetoResponseDTO> listarProjetosDoProponente() {
+        return repository.findByAutorId(getLoggedInUser().getId()).stream()
+                .filter(projeto -> projeto.getStatus() == StatusProjeto.EM_EXECUCAO)
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public List<ProjetoResponseDTO> listarProjetosDoAuditor() {
+        return repository.findByAuditorId(getLoggedInUser().getId()).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional
+    public ProjetoResponseDTO buscarProjetoResponse(Integer id) {
+        Projeto projeto = buscarProjeto(id);
+        User usuario = getLoggedInUser();
+        boolean dono = projeto.getAutor() != null && projeto.getAutor().getId().equals(usuario.getId());
+        boolean auditor = projeto.getAuditor() != null && projeto.getAuditor().getId().equals(usuario.getId());
+        if (!dono && !auditor && usuario.getProfile() != Profile.ADMINISTRADOR) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito ao projeto.");
+        }
+        return toResponse(projeto);
+    }
+
+    @Override
+    @Transactional
+    public ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto) {
+        Projeto projeto = buscarProjeto(id);
+        validateAutorRuntime(projeto);
+        if (projeto.getStatus() != StatusProjeto.EM_EXECUCAO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Projeto ainda nao esta em execucao.");
+        }
+
+        Documento documento = documentoRepository.findById(dto.fotoDocumentoId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento nao encontrado."));
+        if (documento.getContexto() != ContextoDocumento.EVIDENCIA) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Documento deve possuir contexto EVIDENCIA.");
+        }
+
+        AtividadeProjeto atividade = null;
+        if (dto.atividadeId() != null) {
+            atividade = atividadeProjetoRepository.findById(dto.atividadeId())
+                    .orElseThrow(
+                            () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Atividade nao encontrada."));
+            if (!atividade.getProjeto().getId().equals(projeto.getId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Atividade nao pertence ao projeto.");
+            }
+        }
+
+        Evidencia evidencia = new Evidencia();
+        evidencia.setProjeto(projeto);
+        evidencia.setAtividade(atividade);
+        evidencia.setFoto(documento);
+        evidencia.setDescricao(dto.descricao());
+        evidencia.setLatitude(dto.latitude());
+        evidencia.setLongitude(dto.longitude());
+        evidenciaRepository.save(evidencia);
+        return toResponse(projeto);
+    }
+
+    @Override
+    @Transactional
+    public ProjetoResponseDTO validarEvidencia(Integer evidenciaId, ValidarEvidenciaDTO dto) {
+        Evidencia evidencia = evidenciaRepository.findById(evidenciaId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evidencia nao encontrada."));
+        Projeto projeto = evidencia.getProjeto();
+        User auditor = getLoggedInUser();
+        if (projeto.getAuditor() == null || !projeto.getAuditor().getId().equals(auditor.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito ao auditor do projeto.");
+        }
+        evidencia.setStatus(dto.status());
+        evidencia.setComentarioAuditor(dto.comentario());
+        evidencia.setValidadoPor(auditor);
+        evidenciaRepository.save(evidencia);
+        return toResponse(projeto);
+    }
+
+    private ProjetoResponseDTO toResponse(Projeto projeto) {
+        return ProjetoResponseDTO.toResponse(projeto,
+                evidenciaRepository.findByProjetoIdOrderByCriadoEmDesc(projeto.getId())
+                        .stream()
+                        .map(EvidenciaResponseDTO::toResponse)
+                        .toList());
+    }
+
+    private Projeto buscarProjeto(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Projeto nao encontrado."));
     }
 
     @Override
@@ -201,17 +319,17 @@ public class ProjetoServiceImpl implements ProjetoService {
             Pageable pageable,
             ProjetoFilterDTO filterRequest) throws ApiException {
 
-        List<SituacaoProjeto> situacoes = null;
+        List<StatusProjeto> status = null;
 
-        if (!ObjectUtils.isEmpty(filterRequest.situacoes())) {
+        if (!ObjectUtils.isEmpty(filterRequest.status())) {
             try {
-                situacoes = filterRequest.situacoes()
+                status = filterRequest.status()
                         .stream()
-                        .map(SituacaoProjeto::valueOf)
+                        .map(StatusProjeto::valueOf)
                         .toList();
             } catch (IllegalArgumentException ex) {
                 throw new ApiException(
-                        "Situação inválida: " + filterRequest.situacoes());
+                        "Situação inválida: " + filterRequest.status());
             }
         }
 
@@ -219,7 +337,7 @@ public class ProjetoServiceImpl implements ProjetoService {
                 .autorId(getLoggedInUser().getId())
                 .nomeProjeto(filterRequest.nomeProjeto())
                 .tituloEdital(filterRequest.tituloEdital())
-                .situacoes(situacoes)
+                .status(status)
                 .build();
 
         return repository.findAll(specification, pageable);
@@ -230,24 +348,24 @@ public class ProjetoServiceImpl implements ProjetoService {
             Pageable pageable,
             ProjetoFilterDTO filterRequest) throws ApiException {
 
-        List<SituacaoProjeto> situacoes = null;
+        List<StatusProjeto> status = null;
 
-        if (!ObjectUtils.isEmpty(filterRequest.situacoes())) {
+        if (!ObjectUtils.isEmpty(filterRequest.status())) {
             try {
-                situacoes = filterRequest.situacoes()
+                status = filterRequest.status()
                         .stream()
-                        .map(SituacaoProjeto::valueOf)
+                        .map(StatusProjeto::valueOf)
                         .toList();
             } catch (IllegalArgumentException ex) {
                 throw new ApiException(
-                        "Situação inválida: " + filterRequest.situacoes());
+                        "Status do Projeto inválido: " + filterRequest.status());
             }
         }
 
         ProjetoSpecification specification = ProjetoSpecification.builder()
                 .nomeProjeto(filterRequest.nomeProjeto())
                 .tituloEdital(filterRequest.tituloEdital())
-                .situacoes(situacoes)
+                .status(status)
                 .build();
 
         return repository.findAll(specification, pageable);
@@ -257,33 +375,37 @@ public class ProjetoServiceImpl implements ProjetoService {
     public ProjetoIndicadoresDTO obterIndicadoresDoAutor() throws ApiException {
 
         try {
-
             Integer autorId = getLoggedInUser().getId();
 
             Long totalSubmissoes = repository.countByAutorId(autorId);
 
-            Long emAnalise = repository.countByAutorIdAndSituacao(
+            Long emAnalise = repository.countByAutorIdAndStatus(
                     autorId,
-                    SituacaoProjeto.EM_ANALISE);
+                    StatusProjeto.EM_AVALIACAO);
 
-            Long aprovados = repository.countByAutorIdAndSituacao(
+            Long aprovados = repository.countByAutorIdAndStatus(
                     autorId,
-                    SituacaoProjeto.APROVADO);
+                    StatusProjeto.APROVADO);
 
-            Long analisandos = repository.countByAutorIdAndSituacao(
+            Long submetidos = repository.countByAutorIdAndStatus(
                     autorId,
-                    SituacaoProjeto.ANALISADO);
+                    StatusProjeto.SUBMETIDO);
 
-            Long reprovados = repository.countByAutorIdAndSituacao(
+            Long reprovados = repository.countByAutorIdAndStatus(
                     autorId,
-                    SituacaoProjeto.REPROVADO);
+                    StatusProjeto.REPROVADO);
+
+            Long ativos = repository.countByAutorIdAndStatus(
+                    autorId,
+                    StatusProjeto.EM_EXECUCAO);
 
             return new ProjetoIndicadoresDTO(
                     totalSubmissoes,
+                    submetidos,
                     emAnalise,
                     aprovados,
                     reprovados,
-                    analisandos);
+                    ativos);
 
         } catch (Exception e) {
             throw new ApiException(
@@ -297,24 +419,28 @@ public class ProjetoServiceImpl implements ProjetoService {
 
             Long totalSubmissoes = repository.count();
 
-            Long emAnalise = repository.countBySituacao(
-                    SituacaoProjeto.EM_ANALISE);
+            Long emAnalise = repository.countByStatus(
+                    StatusProjeto.EM_AVALIACAO);
 
-            Long aprovados = repository.countBySituacao(
-                    SituacaoProjeto.APROVADO);
+            Long aprovados = repository.countByStatus(
+                    StatusProjeto.APROVADO);
 
-            Long analisandos = repository.countBySituacao(
-                    SituacaoProjeto.ANALISADO);
+            Long reprovados = repository.countByStatus(
+                    StatusProjeto.REPROVADO);
 
-            Long reprovados = repository.countBySituacao(
-                    SituacaoProjeto.REPROVADO);
+            Long submetidos = repository.countByStatus(
+                    StatusProjeto.SUBMETIDO);
+
+            Long ativos = repository.countByStatus(
+                    StatusProjeto.EM_EXECUCAO);
 
             return new ProjetoIndicadoresDTO(
                     totalSubmissoes,
+                    submetidos,
                     emAnalise,
                     aprovados,
                     reprovados,
-                    analisandos);
+                    ativos);
 
         } catch (Exception e) {
             throw new ApiException(
@@ -324,42 +450,47 @@ public class ProjetoServiceImpl implements ProjetoService {
 
     private void validateAutor(Integer id) throws ApiException {
         if (!getLoggedInUser().getId().equals(id)) {
-            throw new ApiException("Ação restrita ao dono do registro.");
+            throw new ApiException("Acao restrita ao dono do registro.");
+        }
+    }
+
+    private void validateAutorRuntime(Projeto projeto) {
+        if (projeto.getAutor() == null || !getLoggedInUser().getId().equals(projeto.getAutor().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acao restrita ao dono do registro.");
         }
     }
 
     private void validarEtapa2(Projeto projeto) throws ApiException {
         if (projeto.getNomeProjeto() != null) {
-            throw new ApiException("A etapa 2 já foi preenchida para este projeto.");
+            throw new ApiException("A etapa 2 ja foi preenchida para este projeto.");
         }
     }
 
     private void validarEtapa3(Projeto projeto) throws ApiException {
         if (projeto.getLocalizacao() != null) {
-            throw new ApiException("A localização já foi cadastrada para este projeto.");
+            throw new ApiException("A localizacao ja foi cadastrada para este projeto.");
         }
     }
 
     private void validarEtapa4(Projeto projeto) throws ApiException {
         if (projeto.getPublicoBeneficiado() != null) {
-            throw new ApiException("O público beneficiado já foi cadastrado para este projeto.");
+            throw new ApiException("O publico beneficiado ja foi cadastrado para este projeto.");
         }
     }
 
     private void validarEtapa5(Projeto projeto) throws ApiException {
         if (projeto.getPlanoExecucao() != null) {
-            throw new ApiException("O plano de execução já foi cadastrado para este projeto.");
+            throw new ApiException("O plano de execucao ja foi cadastrado para este projeto.");
         }
     }
 
     private void validarEtapa6(Projeto projeto) throws ApiException {
         if (Boolean.TRUE.equals(projeto.getDeclarouVeracidadeInformacoes())) {
-            throw new ApiException("Os termos de aceite já foram preenchidos para este projeto.");
+            throw new ApiException("Os termos de aceite ja foram preenchidos para este projeto.");
         }
     }
 
-    private User getLoggedInUser() throws ApiException {
+    private User getLoggedInUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
-
 }

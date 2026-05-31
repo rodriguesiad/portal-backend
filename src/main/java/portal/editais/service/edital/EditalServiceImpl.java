@@ -2,11 +2,7 @@ package portal.editais.service.edital;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,16 +12,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
 import portal.editais.dto.documento.DocumentoEditalResponseDTO;
+import portal.editais.dto.documento.DocumentoResponseDTO;
 import portal.editais.dto.documento.DocumentoVinculadoResponseDTO;
-import portal.editais.dto.edital.EditalDTO;
-import portal.editais.dto.edital.EditalResponseDTO;
-import portal.editais.dto.edital.EditalResumoResponseDTO;
-import portal.editais.dto.edital.EditalUpdateDTO;
+import portal.editais.dto.edital.*;
 import portal.editais.entity.Documento;
 import portal.editais.entity.DocumentoEdital;
 import portal.editais.entity.Edital;
+import portal.editais.entity.CriterioAvaliacao;
 import portal.editais.entity.Estado;
 import portal.editais.entity.FrenteAtuacao;
 import portal.editais.entity.OrgaoProponente;
@@ -43,7 +37,7 @@ import portal.editais.repository.FrenteAtuacaoRepository;
 import portal.editais.repository.OrgaoProponenteRepository;
 import portal.editais.repository.RegiaoImediataRepository;
 import portal.editais.repository.UserRepository;
-import portal.editais.repository.specifications.EditalSpecifications;
+import portal.editais.specification.EditalSpecifications;
 
 @Service
 public class EditalServiceImpl implements EditalService {
@@ -84,6 +78,7 @@ public class EditalServiceImpl implements EditalService {
         validarValores(dto.valorMinimo(), dto.valorMaximo());
         validarPeriodo(dto.inicioRecebimentoPropostas(), dto.fimRecebimentoPropostas());
         validarDocumentosObrigatorios(dto.documentosIds());
+        validarCriterios(dto.criterios());
 
         Estado tocantins = buscarEstadoTocantins();
         OrgaoProponente orgaoProponente = buscarOrgaoProponente(dto.orgaoProponenteId());
@@ -92,19 +87,20 @@ public class EditalServiceImpl implements EditalService {
         }
 
         Edital edital = Edital.builder()
-                .titulo(dto.titulo())
-                .estado(tocantins)
-                .orgaoProponente(orgaoProponente)
-                .frenteAtuacao(buscarFrenteAtuacao(dto.frenteAtuacaoId()))
-                .regiaoImediata(buscarRegiaoImediata(dto.regiaoImediataId()))
-                .avaliadores(buscarAvaliadores(dto.avaliadoresIds()))
-                .valorMinimo(dto.valorMinimo())
-                .valorMaximo(dto.valorMaximo())
-                .inicioRecebimentoPropostas(dto.inicioRecebimentoPropostas())
-                .fimRecebimentoPropostas(dto.fimRecebimentoPropostas())
-                .resumo(dto.resumo())
-                .status(StatusEdital.RASCUNHO)
-                .build();
+            .titulo(dto.titulo())
+            .estado(tocantins)
+            .orgaoProponente(orgaoProponente)
+            .frenteAtuacao(buscarFrenteAtuacao(dto.frenteAtuacaoId()))
+            .regiaoImediata(buscarRegiaoImediata(dto.regiaoImediataId()))
+            .avaliadores(buscarAvaliadores(dto.avaliadoresIds()))
+            .valorMinimo(dto.valorMinimo())
+            .valorMaximo(dto.valorMaximo())
+            .inicioRecebimentoPropostas(dto.inicioRecebimentoPropostas())
+            .fimRecebimentoPropostas(dto.fimRecebimentoPropostas())
+            .resumo(dto.resumo())
+            .status(StatusEdital.RASCUNHO)
+            .build();
+        aplicarCriterios(edital, dto.criterios());
 
         Edital editalSalvo = editalRepository.save(edital);
         vincularDocumentosAoEdital(editalSalvo, dto.documentosIds());
@@ -125,6 +121,7 @@ public class EditalServiceImpl implements EditalService {
         validarValores(dto.valorMinimo(), dto.valorMaximo());
         validarPeriodo(dto.inicioRecebimentoPropostas(), dto.fimRecebimentoPropostas());
         validarDocumentosObrigatorios(dto.documentosIds());
+        validarCriterios(dto.criterios());
 
         Edital edital = buscarEdital(id);
         if (edital.getStatus() != StatusEdital.RASCUNHO) {
@@ -147,6 +144,7 @@ public class EditalServiceImpl implements EditalService {
         edital.setInicioRecebimentoPropostas(dto.inicioRecebimentoPropostas());
         edital.setFimRecebimentoPropostas(dto.fimRecebimentoPropostas());
         edital.setResumo(dto.resumo());
+        aplicarCriterios(edital, dto.criterios());
 
         documentoEditalRepository.deleteAll(documentoEditalRepository.findByEditalId(edital.getId()));
         vincularDocumentosAoEdital(edital, dto.documentosIds());
@@ -339,4 +337,23 @@ public class EditalServiceImpl implements EditalService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe ao menos um documento PDF.");
         }
     }
+
+    private void validarCriterios(List<CriterioAvaliacaoDTO> criterios) {
+        if (criterios == null || criterios.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe ao menos um critério de avaliação.");
+        }
+    }
+
+    private void aplicarCriterios(Edital edital, List<CriterioAvaliacaoDTO> criterios) {
+        edital.getCriterios().clear();
+        criterios.stream()
+            .sorted(Comparator.comparing(CriterioAvaliacaoDTO::ordem))
+            .forEach(dto -> edital.getCriterios().add(CriterioAvaliacao.builder()
+                .edital(edital)
+                .nome(dto.nome())
+                .descricao(dto.descricao())
+                .ordem(dto.ordem())
+                .build()));
+    }
 }
+

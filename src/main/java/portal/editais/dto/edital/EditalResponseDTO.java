@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import portal.editais.dto.documento.DocumentoVinculadoResponseDTO;
+import portal.editais.entity.CriterioAvaliacao;
 import portal.editais.entity.Edital;
 import portal.editais.enumeration.StatusEdital;
 
@@ -20,6 +21,7 @@ public record EditalResponseDTO(
     String frenteAtuacao,
     Integer regiaoImediataId,
     String regiaoImediata,
+    List<CriterioAvaliacaoResponseDTO> criterios,
     List<DocumentoVinculadoResponseDTO> documentos,
     BigDecimal valorMinimo,
     BigDecimal valorMaximo,
@@ -43,6 +45,10 @@ public record EditalResponseDTO(
                 edital.getFrenteAtuacao().getNome(),
                 edital.getRegiaoImediata().getId(),
                 edital.getRegiaoImediata().getNome(),
+                edital.getCriterios().stream()
+                        .sorted(java.util.Comparator.comparing(CriterioAvaliacao::getOrdem))
+                        .map(CriterioAvaliacaoResponseDTO::toResponse)
+                        .toList(),
                 documentos,
                 edital.getValorMinimo(),
                 edital.getValorMaximo(),

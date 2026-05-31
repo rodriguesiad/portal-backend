@@ -1,10 +1,10 @@
 package portal.editais.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -21,7 +22,8 @@ import jakarta.persistence.Transient;
 import lombok.Data;
 import portal.editais.enumeration.SituacaoProjeto;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "projeto")
 public class Projeto {
@@ -70,6 +72,17 @@ public class Projeto {
     @JoinColumn(name = "id_plano_execucao")
     private PlanoExecucao planoExecucao;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auditor_id")
+    private User auditor;
+
+    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AtividadeProjeto> atividades = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private StatusProjeto status = StatusProjeto.RASCUNHO;
+
     private Boolean declarouVeracidadeInformacoes;
 
     private Boolean autorizouTratamentoDadosLgpd;
@@ -85,6 +98,9 @@ public class Projeto {
     @PrePersist
     protected void prePersist() {
         this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = StatusProjeto.RASCUNHO;
+        }
     }
 
     @PreUpdate

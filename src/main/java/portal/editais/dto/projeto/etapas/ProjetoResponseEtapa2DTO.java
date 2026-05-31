@@ -8,7 +8,7 @@ public record ProjetoResponseEtapa2DTO(
                 Integer id,
                 SituacaoProjeto situacao,
                 String nomeProjeto,
-                EditalResumoResponseDTO edital,
+                Integer edital,
                 String resumo,
                 String justificativaMerito) {
         public static ProjetoResponseEtapa2DTO toResponse(Projeto entity) {
@@ -16,8 +16,7 @@ public record ProjetoResponseEtapa2DTO(
                                 entity.getId(),
                                 entity.getSituacao(),
                                 entity.getNomeProjeto(),
-                                entity.getEdital() != null ? EditalResumoResponseDTO.toResponse(entity.getEdital())
-                                                : null,
+                                entity.getEdital() != null ? entity.getEdital().getId() : null,
                                 entity.getResumo(),
                                 entity.getJustificativaMerito());
         }

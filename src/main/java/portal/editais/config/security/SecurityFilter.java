@@ -4,24 +4,17 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import portal.editais.config.security.token.TokenService;
-import portal.editais.repository.UserRepository;
-
+import java.io.IOException;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import portal.editais.config.security.token.TokenService;
+import portal.editais.repository.UserRepository;
 
-import java.io.IOException;
-
-/**
- * Filtro de segurança responsável por interceptar as requisições e validar os tokens JWT
- * para autenticar o usuário na aplicação.
- * Ele verifica o token presente no cabeçalho da requisição e, se válido, autentica o usuário
- * no contexto de segurança do Spring Security.
- */
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -32,15 +25,29 @@ public class SecurityFilter extends OncePerRequestFilter {
     private UserRepository userRepository;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String tokenJWT = obterToken(request);
 
         if (tokenJWT != null) {
-            String subject = tokenService.getSubject(tokenJWT);
+            String subject;
+            try {
+                subject = tokenService.getSubject(tokenJWT);
+            } catch (RuntimeException exception) {
+                SecurityContextHolder.clearContext();
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
             if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails user = userRepository.findById(Integer.parseInt(subject)).orElseThrow(() -> new RuntimeException("Não foi possível consultar usuário pelo e-mail " + subject));
+                Optional<? extends UserDetails> usuario = buscarUsuario(subject);
+                if (usuario.isEmpty()) {
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
 
+                UserDetails user = usuario.get();
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -59,4 +66,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authorizationHeader.replace("Bearer", "").strip();
     }
 
+    private Optional<? extends UserDetails> buscarUsuario(String subject) {
+        try {
+            return userRepository.findById(Integer.parseInt(subject));
+        } catch (NumberFormatException exception) {
+            return userRepository.findUserByEmail(subject);
+        }
+    }
 }

@@ -23,7 +23,7 @@ import portal.editais.enumeration.Profile;
 
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 public class User implements UserDetails {
 
     @Id
@@ -67,7 +67,7 @@ public class User implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_PROPONENTE"));
         }
 
-        return List.of(new SimpleGrantedAuthority("ROLE_PROPONENTE"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.profile.name()));
     }
 
     @Override

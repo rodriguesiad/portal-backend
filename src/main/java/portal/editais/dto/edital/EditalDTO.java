@@ -16,6 +16,7 @@ public record EditalDTO(
     @NotNull Integer regiaoImediataId,
     @NotNull Integer orgaoProponenteId,
     @NotEmpty List<Integer> avaliadoresIds,
+    @NotEmpty List<CriterioAvaliacaoDTO> criterios,
     @NotEmpty List<UUID> documentosIds,
     @NotNull @DecimalMin("0.01") BigDecimal valorMinimo,
     @NotNull @DecimalMin("0.01") BigDecimal valorMaximo,
