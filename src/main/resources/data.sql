@@ -223,6 +223,39 @@ VALUES
     'ABERTO'
 );
 
+
+INSERT INTO editais (
+    estado_id,
+    frente_atuacao_id,
+    regiao_imediata_id,
+    orgao_proponente_id,
+    titulo,
+    resumo,
+    valorMinimo,
+    valorMaximo,
+    inicioRecebimentoPropostas,
+    fimRecebimentoPropostas,
+    criadoEm,
+    atualizadoEm,
+    status
+)
+VALUES
+(
+    1,
+    9,
+    8,
+    1,
+    'Chamada Pública REDD+ Tocantins 2024',
+    'Seleção de propostas para implementação de projetos de carbono florestal, monitoramento ambiental e fortalecimento da governança climática no estado do Tocantins.',
+    500000.00,
+    12000000.00,
+    '2024-01-10',
+    '2024-03-30',
+    NOW(),
+    NOW(),
+    'ENCERRADO'
+);
+
 INSERT INTO criterios_avaliacao (
     edital_id,
     ordem,
@@ -230,11 +263,53 @@ INSERT INTO criterios_avaliacao (
     descricao
 )
 VALUES
-(1,1,'Capacidade Técnica','Experiência comprovada em projetos de carbono, REDD+ ou serviços ambientais.'),
-(1,2,'Capacidade Financeira','Demonstração de capacidade econômico-financeira para execução do projeto.'),
-(1,3,'Abrangência de Atuação','Experiência nacional ou internacional em mercados regulados ou voluntários de carbono.'),
-(1,4,'Governança e Compliance','Existência de programa de integridade, compliance e anticorrupção.'),
-(1,5,'Benefícios Ambientais','Potencial de geração de benefícios ambientais para o Estado do Tocantins.');
+(1,1,'Capacidade Técnica','Experiência em projetos REDD+, carbono florestal e monitoramento ambiental.'),
+(1,2,'Governança Climática','Estrutura de governança e transparência na execução de projetos ambientais.'),
+(1,3,'Monitoramento e MRV','Capacidade de mensuração, relato e verificação de carbono.'),
+(1,4,'Impacto Ambiental','Potencial de redução de emissões e conservação florestal.'),
+(1,5,'Viabilidade Financeira','Sustentabilidade econômica da proposta.'),
+
+(2,1,'Experiência em Restauração','Atuação comprovada em recuperação de áreas degradadas.'),
+(2,2,'Tecnologias de Restauração','Uso de técnicas eficientes de recomposição vegetal.'),
+(2,3,'Impacto Ecológico','Ganho ambiental em biodiversidade e solo.'),
+(2,4,'Engajamento Comunitário','Participação de comunidades locais nas ações.'),
+(2,5,'Escalabilidade','Potencial de replicação do projeto.'),
+
+(3,1,'Gestão Hídrica','Experiência em conservação de recursos hídricos.'),
+(3,2,'Proteção de Nascentes','Metodologias de recuperação e proteção hídrica.'),
+(3,3,'Qualidade da Água','Indicadores de melhoria da qualidade hídrica.'),
+(3,4,'Sustentabilidade Territorial','Integração com uso do solo sustentável.'),
+(3,5,'Engajamento Local','Participação comunitária na conservação.'),
+
+(4,1,'Respeito Sociocultural','Adequação às práticas e culturas indígenas.'),
+(4,2,'Proteção Territorial','Efetividade em vigilância e proteção de terras.'),
+(4,3,'Autonomia Comunitária','Fortalecimento da gestão indígena local.'),
+(4,4,'Impacto Social','Benefícios diretos às comunidades indígenas.'),
+(4,5,'Sustentabilidade','Continuidade das ações no longo prazo.'),
+
+(5,1,'Capacitação de Brigadas','Formação e treinamento de equipes locais.'),
+(5,2,'Estrutura Operacional','Capacidade de resposta a incêndios florestais.'),
+(5,3,'Tecnologias Preventivas','Uso de sistemas de alerta e monitoramento.'),
+(5,4,'Redução de Risco','Efetividade na diminuição de queimadas.'),
+(5,5,'Mobilização Comunitária','Engajamento social na prevenção.'),
+
+(6,1,'Práticas Sustentáveis','Adoção de sistemas agrícolas de baixa emissão.'),
+(6,2,'Produtividade','Melhoria da produção agrícola.'),
+(6,3,'Inovação Tecnológica','Uso de tecnologias agrícolas sustentáveis.'),
+(6,4,'Resiliência Climática','Adaptação às mudanças climáticas.'),
+(6,5,'Inclusão Produtiva','Participação de agricultores familiares.'),
+
+(7,1,'Conservação da Fauna','Proteção de espécies nativas.'),
+(7,2,'Conservação da Flora','Preservação de vegetação nativa.'),
+(7,3,'Monitoramento Ambiental','Capacidade de acompanhamento ecológico.'),
+(7,4,'Áreas Prioritárias','Atuação em zonas de alta relevância ecológica.'),
+(7,5,'Pesquisa Científica','Geração de dados e estudos ambientais.'),
+
+(8,1,'Capacidade Técnica','Experiência comprovada em projetos de carbono e REDD+.'),
+(8,2,'Resultados Obtidos','Histórico de impacto ambiental mensurável.'),
+(8,3,'Gestão de Projetos','Eficiência na execução e controle de projetos.'),
+(8,4,'Transparência','Mecanismos de auditoria e prestação de contas.'),
+(8,5,'Impacto Climático','Contribuição para redução de emissões e conservação florestal');
 
 INSERT INTO edital_avaliadores (
     edital_id,
@@ -247,7 +322,9 @@ VALUES
 (4,2),
 (5,2),
 (6,2),
-(7,2);
+(7,2),
+(8,2);
+
 
 -- Projetos
 -- REPRESENTANTES LEGAIS
@@ -270,6 +347,14 @@ VALUES
 (9,'Luciana Ramos','luciana@appsvivas.org','63999990009','99999999999','Presidente'),
 (10,'Marcos Ferreira','marcos@nascentes.org','63999990010','10101010101','Coordenador'),
 (11,'Patricia Sousa','patricia@guardioes.org','63999990011','11111111112','Diretora');
+
+INSERT INTO representante_legal
+(id,nomeCompleto,email,telefone,cpf,cargo)
+VALUES
+(12,'Beatriz Nogueira Lima','beatriz@carbonoamazonia.org','63988880001','12121212121','Diretora Técnica'),
+(13,'Eduardo Martins Alves','eduardo@florestasvivas.org','63988880002','13131313131','Coordenador Geral'),
+(14,'Camila Teixeira Rocha','camila@verdecerrado.org','63988880003','14141414141','Gestora Ambiental'),
+(15,'Rafael Duarte Souza','rafael@guardioesflorestais.org','63988880004','15151515151','Diretor Executivo');
 
 -- INSTITUIÇÕES
 
@@ -380,8 +465,6 @@ VALUES
  7
 );
 
--- INSTITUIÇÕES
-
 INSERT INTO instituicao
 (
 id,
@@ -454,6 +537,29 @@ NOW(),
 11
 );
 
+INSERT INTO instituicao
+(
+id,createdAt,cnpj,razaoSocial,nomeFantasia,dataFundacao,
+id_natureza_juridica,areaAtuacao,site,situacao,id_representante_legal
+)
+VALUES
+(
+12,NOW(),'22.111.222/0001-90','Instituto Carbono Amazônia','ICA','2019-03-10',
+56,'Monitoramento de carbono e REDD+','https://ica.org.br','ATIVA',12
+),
+(
+13,NOW(),'33.222.333/0001-91','Fundação Florestas Vivas','FFV','2020-07-22',
+56,'Restauração ecológica e biodiversidade','https://ffv.org.br','ATIVA',13
+),
+(
+14,NOW(),'44.333.444/0001-92','Instituto Verde Cerrado','IVC','2018-11-05',
+56,'Recursos naturais e sustentabilidade','https://ivc.org.br','ATIVA',14
+),
+(
+15,NOW(),'55.444.555/0001-93','Associação Guardiões Florestais','AGF','2021-02-14',
+56,'Proteção territorial e florestal','https://agf.org.br','ATIVA',15
+);
+
 -- LOCALIZAÇÕES
 
 INSERT INTO localizacao
@@ -474,6 +580,14 @@ VALUES
 (9,7,'-10.680','-48.430','Projeto Ribeirinho Tocantins'),
 (10,12,'-10.790','-48.880','Assentamento Esperança'),
 (11,31,'-6.280','-47.390','Terra Indígena Apinajé Norte');
+
+INSERT INTO localizacao
+(id,id_municipio,latitude,longitude,comunidade)
+VALUES
+(12,5,'-10.350','-48.520','Comunidade Santa Luzia'),
+(13,8,'-10.920','-48.650','Vila Rio Verde'),
+(14,15,'-10.780','-49.200','Assentamento Nova Esperança'),
+(15,28,'-6.510','-47.820','Terra Indígena Surubim');
 
 -- PÚBLICO BENEFICIADO
 
@@ -540,6 +654,34 @@ VALUES
 'Proteção territorial e fortalecimento cultural indígena'
 );
 
+INSERT INTO publico_beneficiado
+(
+id,mulheresQuant,homensQuant,criancasQuant,jovensQuant,idososQuant,
+povosIndigenasQuant,quilombolasQuant,agricultoresFamiliarQuant,
+comunidadesTradicionaisQuant,rendaMedia,fonteRendaPrincipal,descricaoAplicacaoBeneficio
+)
+VALUES
+(
+12,160,140,80,110,25,0,0,60,15,1750,
+'Serviços Ambientais',
+'Fortalecimento de cadeias de carbono e monitoramento ambiental'
+),
+(
+13,130,150,90,95,20,0,0,85,10,1500,
+'Restauração Florestal',
+'Recuperação de áreas degradadas e reflorestamento'
+),
+(
+14,170,180,100,120,30,0,0,90,25,1600,
+'Agricultura Sustentável',
+'Implantação de sistemas produtivos de baixa emissão'
+),
+(
+15,110,120,70,80,15,180,0,0,40,1200,
+'Proteção Territorial',
+'Vigilância e proteção de territórios sensíveis'
+);
+
 -- PLANOS
 
 INSERT INTO plano_execucao
@@ -593,6 +735,30 @@ VALUES
 'Promover vigilância territorial e formação de agentes ambientais indígenas.'
 );
 
+INSERT INTO plano_execucao
+(id,objetivoGeral,objetivoEspecifico)
+VALUES
+(
+10,
+'Implementar sistema avançado de monitoramento de carbono.',
+'Desenvolver inventário florestal e integração com dados geoespaciais.'
+),
+(
+11,
+'Restaurar áreas degradadas críticas.',
+'Executar plantio e regeneração natural assistida.'
+),
+(
+12,
+'Promover agricultura de baixa emissão.',
+'Capacitar produtores e implementar práticas regenerativas.'
+),
+(
+13,
+'Fortalecer proteção territorial e florestal.',
+'Implementar vigilância comunitária e monitoramento contínuo.'
+);
+
 INSERT INTO atividade
 (descricao, responsavel, dataInicio, dataFim, id_plano_execucao)
 VALUES
@@ -627,6 +793,26 @@ VALUES
 
 ('Formação de agentes indígenas','Equipe Social','2026-05-01','2026-07-01',9),
 ('Monitoramento territorial','Equipe Comunitária','2026-07-02','2027-02-01',9);
+
+INSERT INTO atividade
+(descricao,responsavel,dataInicio,dataFim,id_plano_execucao)
+VALUES
+
+-- Plano 10
+('Coleta de dados de carbono','Equipe Técnica','2026-07-01','2026-08-15',10),
+('Análise geoespacial florestal','Equipe GIS','2026-08-16','2026-10-30',10),
+
+-- Plano 11
+('Preparação do solo para restauração','Equipe Campo','2026-07-01','2026-08-01',11),
+('Plantio e regeneração assistida','Equipe Ambiental','2026-08-02','2026-12-20',11),
+
+-- Plano 12
+('Treinamento de agricultores','Equipe Agronômica','2026-07-10','2026-08-30',12),
+('Implementação de práticas sustentáveis','Equipe Técnica','2026-09-01','2027-03-01',12),
+
+-- Plano 13
+('Implantação de torres de vigilância','Equipe Operacional','2026-06-01','2026-07-15',13),
+('Monitoramento comunitário contínuo','Agentes Locais','2026-07-16','2027-02-01',13);
 
 -- PROJETOS
 
@@ -813,5 +999,51 @@ NOW(),
 'Fortalecimento da vigilância territorial indígena.',
 'Integra proteção ambiental e valorização cultural.',
 'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+);
+
+INSERT INTO projeto
+(
+createdAt,id_autor,id_edital,id_instituicao,id_localizacao,
+id_publico_beneficiado,id_plano_execucao,auditor_id,
+nomeProjeto,resumo,justificativaMerito,status,
+declarouVeracidadeInformacoes,autorizouTratamentoDadosLgpd,
+comprometeuPrestacaoContas,autorizouMonitoramentoAuditoria
+)
+VALUES
+
+(
+NOW(),3,8,12,12,12,10,4,
+'Carbono Inteligente Amazônia Tocantins',
+'Sistema integrado de monitoramento de carbono florestal.',
+'Melhora a precisão do inventário de carbono regional.',
+'EM_EXECUCAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),3,8,13,13,13,11,4,
+'Reflorestamento Florestas Vivas Tocantins',
+'Projeto de restauração ecológica em áreas degradadas.',
+'Recuperação de ecossistemas e aumento da biodiversidade.',
+'EM_EXECUCAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),3,8,14,14,14,12,4,
+'Agricultura Regenerativa Cerrado',
+'Implantação de práticas agrícolas sustentáveis.',
+'Redução de emissões e aumento da produtividade sustentável.',
+'EM_EXECUCAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),3,8,15,15,15,13,4,
+'Guardiões Florestais do Tocantins',
+'Sistema de proteção territorial e monitoramento comunitário.',
+'Fortalece a proteção de áreas sensíveis e territórios tradicionais.',
+'EM_EXECUCAO',
 b'1',b'1',b'1',b'1'
 );
