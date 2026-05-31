@@ -1,4 +1,4 @@
-package portal.editais.dto.subprojeto;
+package portal.editais.dto.projeto.etapas;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

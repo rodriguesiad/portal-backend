@@ -6,13 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import portal.editais.entity.AvaliacaoCriterio;
 
 public interface AvaliacaoCriterioRepository extends JpaRepository<AvaliacaoCriterio, Integer> {
-    List<AvaliacaoCriterio> findBySubprojetoId(Integer subprojetoId);
-
-    List<AvaliacaoCriterio> findBySubprojetoIdAndAvaliadorId(Integer subprojetoId, Integer avaliadorId);
-
-    Optional<AvaliacaoCriterio> findBySubprojetoIdAndCriterioIdAndAvaliadorId(
-        Integer subprojetoId,
+    Optional<AvaliacaoCriterio> findByProjetoIdAndCriterioIdAndAvaliadorId(
+        Integer projetoId,
         Integer criterioId,
         Integer avaliadorId
     );
+
+    List<AvaliacaoCriterio> findByProjetoId(Integer projetoId);
 }

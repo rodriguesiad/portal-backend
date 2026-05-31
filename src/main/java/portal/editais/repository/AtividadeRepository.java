@@ -8,9 +8,5 @@ import org.springframework.stereotype.Repository;
 import portal.editais.entity.Atividade;
 
 @Repository
-public interface AtividadeRepository
-        extends JpaRepository<Atividade, Integer>, JpaSpecificationExecutor<Atividade> {
-    List<Atividade> findByEditalId(Integer editalId);
-
-    List<Atividade> findByAutorId(Integer autorId);
+public interface AtividadeRepository extends JpaRepository<Atividade, Integer>, JpaSpecificationExecutor<Atividade> {
 }

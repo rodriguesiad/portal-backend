@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import portal.editais.dto.avaliacao.AvaliacaoDTO;
-import portal.editais.dto.avaliacao.PropostaAvaliacaoResponseDTO;
+import portal.editais.dto.avaliacao.ProjetoAvaliacaoResponseDTO;
 import portal.editais.dto.avaliacao.RankingPropostaResponseDTO;
 import portal.editais.dto.avaliacao.SelecionarVencedorDTO;
 import portal.editais.dto.edital.EditalResumoResponseDTO;
@@ -21,7 +21,7 @@ import portal.editais.service.avaliacao.AvaliacaoService;
 
 @RestController
 @RequestMapping("/avaliador")
-@Tag(name = "Avaliação")
+@Tag(name = "Avaliacao")
 public class AvaliacaoController {
 
     private final AvaliacaoService avaliacaoService;
@@ -37,13 +37,13 @@ public class AvaliacaoController {
     }
 
     @Secured("ROLE_AVALIADOR")
-    @GetMapping("/editais/{id}/propostas")
-    public ResponseEntity<List<PropostaAvaliacaoResponseDTO>> listarPropostas(@PathVariable Integer id) {
-        return ResponseEntity.ok(avaliacaoService.listarPropostas(id));
+    @GetMapping("/editais/{id}/projetos")
+    public ResponseEntity<List<ProjetoAvaliacaoResponseDTO>> listarProjetos(@PathVariable Integer id) {
+        return ResponseEntity.ok(avaliacaoService.listarProjetos(id));
     }
 
     @Secured("ROLE_AVALIADOR")
-    @PostMapping("/propostas/{id}/avaliacoes")
+    @PostMapping("/projetos/{id}/avaliacoes")
     public ResponseEntity<Void> avaliar(@PathVariable Integer id, @RequestBody @Valid AvaliacaoDTO dto) {
         avaliacaoService.salvarAvaliacao(id, dto);
         return ResponseEntity.noContent().build();

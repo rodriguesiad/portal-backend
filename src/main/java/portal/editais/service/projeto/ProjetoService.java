@@ -1,6 +1,9 @@
 package portal.editais.service.projeto;
 
 import portal.editais.config.exception.ApiException;
+import portal.editais.dto.projeto.EvidenciaDTO;
+import portal.editais.dto.projeto.ProjetoResponseDTO;
+import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
@@ -9,10 +12,6 @@ import portal.editais.dto.projeto.etapas.ProjetoEtapa5DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa6DTO;
 import portal.editais.entity.Projeto;
 import java.util.List;
-import portal.editais.dto.projeto.EvidenciaDTO;
-import portal.editais.dto.projeto.EvidenciaResponseDTO;
-import portal.editais.dto.projeto.ProjetoResponseDTO;
-import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 
 public interface ProjetoService {
     Projeto implementaProjetoEtapa1(ProjetoEtapa1DTO dto) throws ApiException;
@@ -33,9 +32,9 @@ public interface ProjetoService {
 
     List<ProjetoResponseDTO> listarProjetosDoAuditor();
 
-    ProjetoResponseDTO buscarProjeto(Integer id);
+    ProjetoResponseDTO buscarProjetoResponse(Integer id);
 
-    EvidenciaResponseDTO enviarEvidencia(Integer projetoId, EvidenciaDTO dto);
+    ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto);
 
-    EvidenciaResponseDTO validarEvidencia(Integer evidenciaId, ValidarEvidenciaDTO dto);
+    ProjetoResponseDTO validarEvidencia(Integer evidenciaId, ValidarEvidenciaDTO dto);
 }

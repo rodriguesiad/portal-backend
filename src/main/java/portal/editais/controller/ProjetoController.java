@@ -1,8 +1,5 @@
 package portal.editais.controller;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,21 +12,23 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
+import portal.editais.dto.projeto.EvidenciaDTO;
+import portal.editais.dto.projeto.ProjetoResponseDTO;
+import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa4DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa5DTO;
+import portal.editais.dto.projeto.etapas.ProjetoEtapa6DTO;
 import portal.editais.dto.projeto.etapas.ProjetoResponseEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoResponseEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoResponseEtapa3DTO;
 import portal.editais.dto.projeto.etapas.ProjetoResponseEtapa4DTO;
 import portal.editais.dto.projeto.etapas.ProjetoResponseEtapa5DTO;
+import portal.editais.dto.projeto.etapas.ProjetoResponseEtapa6DTO;
 import portal.editais.entity.Projeto;
-import portal.editais.dto.projeto.EvidenciaDTO;
-import portal.editais.dto.projeto.EvidenciaResponseDTO;
-import portal.editais.dto.projeto.ProjetoResponseDTO;
-import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 import portal.editais.service.projeto.ProjetoService;
 
 @RestController
@@ -93,37 +92,47 @@ public class ProjetoController {
         return ResponseEntity.ok(ProjetoResponseEtapa5DTO.toResponse(entity));
     }
 
-    @Secured("ROLE_PROPONENTE")
-    @GetMapping("/proponente/projetos")
-    public ResponseEntity<List<ProjetoResponseDTO>> listarProjetosProponente() {
-        return ResponseEntity.ok(projetoService.listarProjetosDoProponente());
+    @Secured({ "ROLE_PROPONENTE" })
+    @PostMapping("/etapa-6/{id}")
+    @Operation(description = "Inserindo etapa 6 da submissao de projeto")
+    public ResponseEntity<ProjetoResponseEtapa6DTO> createTermos(
+            @Valid @RequestBody ProjetoEtapa6DTO dto, @PathVariable Integer id) throws Exception {
+
+        Projeto entity = service.implementaProjetoEtapa6(id, dto);
+        return ResponseEntity.ok(ProjetoResponseEtapa6DTO.toResponse(entity));
     }
 
-    @Secured("ROLE_AUDITOR")
-    @GetMapping("/auditor/projetos")
-    public ResponseEntity<List<ProjetoResponseDTO>> listarProjetosAuditor() {
-        return ResponseEntity.ok(projetoService.listarProjetosDoAuditor());
+    @Secured({ "ROLE_PROPONENTE" })
+    @GetMapping("/proponente")
+    public ResponseEntity<List<ProjetoResponseDTO>> listarProjetosDoProponente() {
+        return ResponseEntity.ok(service.listarProjetosDoProponente());
     }
 
-    @Secured("ROLE_PROPONENTE")
-    @PostMapping("/projetos/{id}/evidencias")
-    public ResponseEntity<EvidenciaResponseDTO> enviarEvidencia(
-            @PathVariable Integer id,
-            @RequestBody @Valid EvidenciaDTO dto) {
-        return ResponseEntity.ok(projetoService.enviarEvidencia(id, dto));
+    @Secured({ "ROLE_AUDITOR" })
+    @GetMapping("/auditor")
+    public ResponseEntity<List<ProjetoResponseDTO>> listarProjetosDoAuditor() {
+        return ResponseEntity.ok(service.listarProjetosDoAuditor());
     }
 
-    @Secured("ROLE_AUDITOR")
-    @PostMapping("/auditor/evidencias/{id}/validar")
-    public ResponseEntity<EvidenciaResponseDTO> validarEvidencia(
-            @PathVariable Integer id,
-            @RequestBody @Valid ValidarEvidenciaDTO dto) {
-        return ResponseEntity.ok(projetoService.validarEvidencia(id, dto));
-    }
-
-    @GetMapping("/projetos/{id}")
+    @Secured({ "ROLE_PROPONENTE", "ROLE_AUDITOR", "ROLE_ADMINISTRADOR" })
+    @GetMapping("/{id}")
     public ResponseEntity<ProjetoResponseDTO> buscarProjeto(@PathVariable Integer id) {
-        return ResponseEntity.ok(projetoService.buscarProjeto(id));
+        return ResponseEntity.ok(service.buscarProjetoResponse(id));
     }
 
+    @Secured({ "ROLE_PROPONENTE" })
+    @PostMapping("/{id}/evidencias")
+    public ResponseEntity<ProjetoResponseDTO> criarEvidencia(
+            @PathVariable Integer id,
+            @Valid @RequestBody EvidenciaDTO dto) {
+        return ResponseEntity.ok(service.criarEvidencia(id, dto));
+    }
+
+    @Secured({ "ROLE_AUDITOR" })
+    @PostMapping("/auditor/evidencias/{id}/validar")
+    public ResponseEntity<ProjetoResponseDTO> validarEvidencia(
+            @PathVariable Integer id,
+            @Valid @RequestBody ValidarEvidenciaDTO dto) {
+        return ResponseEntity.ok(service.validarEvidencia(id, dto));
+    }
 }

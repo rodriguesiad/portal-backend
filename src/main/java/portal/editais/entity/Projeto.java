@@ -13,7 +13,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -22,10 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Data;
 import portal.editais.enumeration.StatusSubprojeto;
 
-@Data
 @Getter
 @Setter
 @Entity
@@ -64,13 +61,6 @@ public class Projeto {
     @Column(length = 1500)
     private String justificativaMerito;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    private StatusSubprojeto status = StatusSubprojeto.RASCUNHO;
-
-    @OneToMany(mappedBy = "subprojeto", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AtividadeSubprojeto> atividades = new ArrayList<>();
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_localizacao")
     private Localizacao localizacao;
@@ -83,9 +73,16 @@ public class Projeto {
     @JoinColumn(name = "id_plano_execucao")
     private PlanoExecucao planoExecucao;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "auditor_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "auditor_id")
     private User auditor;
+
+    @OneToMany(mappedBy = "projeto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AtividadeProjeto> atividades = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private StatusSubprojeto status = StatusSubprojeto.RASCUNHO;
 
     private Boolean declarouVeracidadeInformacoes;
 

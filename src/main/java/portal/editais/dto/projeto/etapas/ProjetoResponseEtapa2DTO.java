@@ -12,7 +12,7 @@ public record ProjetoResponseEtapa2DTO(
                 return new ProjetoResponseEtapa2DTO(
                                 entity.getId(),
                                 entity.getNomeProjeto(),
-                                entity.getEdital(),
+                                entity.getEdital() != null ? entity.getEdital().getId() : null,
                                 entity.getResumo(),
                                 entity.getJustificativaMerito());
         }

@@ -22,7 +22,7 @@ import lombok.Setter;
 @Entity
 @Table(
     name = "avaliacoes_criterios",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"subprojeto_id", "criterio_id", "avaliador_id"})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"projeto_id", "criterio_id", "avaliador_id"})
 )
 public class AvaliacaoCriterio {
 
@@ -31,12 +31,12 @@ public class AvaliacaoCriterio {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "subprojeto_id", nullable = false)
-    private Subprojeto subprojeto;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "criterio_id", nullable = false)
     private CriterioAvaliacao criterio;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "projeto_id", nullable = false)
+    private Projeto projeto;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "avaliador_id", nullable = false)

@@ -6,7 +6,7 @@ import portal.editais.entity.Projeto;
 
 public record ProjetoResponseDTO(
     Integer id,
-    Integer subprojetoId,
+    Integer editalId,
     String nome,
     String proponente,
     String auditor,
@@ -17,11 +17,11 @@ public record ProjetoResponseDTO(
     public static ProjetoResponseDTO toResponse(Projeto projeto, List<EvidenciaResponseDTO> evidencias) {
         return new ProjetoResponseDTO(
             projeto.getId(),
-            projeto.getSubprojeto().getId(),
-            projeto.getSubprojeto().getNomeSubprojeto(),
-            projeto.getSubprojeto().getAutor().getNome(),
-            projeto.getAuditor().getNome(),
-            projeto.getCriadoEm(),
+            projeto.getEdital() != null ? projeto.getEdital().getId() : null,
+            projeto.getNomeProjeto(),
+            projeto.getAutor() != null ? projeto.getAutor().getNome() : null,
+            projeto.getAuditor() != null ? projeto.getAuditor().getNome() : null,
+            projeto.getCreatedAt(),
             projeto.getAtividades().stream().map(AtividadeProjetoResponseDTO::toResponse).toList(),
             evidencias
         );
