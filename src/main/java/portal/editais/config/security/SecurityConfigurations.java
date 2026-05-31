@@ -66,6 +66,7 @@ public class SecurityConfigurations implements WebMvcConfigurer {
                     request.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/users/**").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/natureza-juridicas/**").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/editais").permitAll();
                     request.requestMatchers(
                             "/v3/api-docs/**",
                             "/swagger-ui/**",
@@ -97,8 +98,7 @@ public class SecurityConfigurations implements WebMvcConfigurer {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:*",
-                "http://127.0.0.1:*"
-        ));
+                "http://127.0.0.1:*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
         config.setExposedHeaders(List.of("Authorization"));
