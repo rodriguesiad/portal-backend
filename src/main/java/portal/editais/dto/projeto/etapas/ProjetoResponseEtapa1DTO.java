@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import portal.editais.dto.projeto.instituicao.InstituicaoResponseDTO;
 import portal.editais.dto.user.UserResponseDTO;
 import portal.editais.entity.Projeto;
+import portal.editais.enumeration.SituacaoProjeto;
 
 public record ProjetoResponseEtapa1DTO(
         Integer id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
+        SituacaoProjeto situacao,
         InstituicaoResponseDTO instituicao,
         UserResponseDTO autor) {
     public static ProjetoResponseEtapa1DTO toResponse(Projeto entity) {
@@ -17,6 +19,7 @@ public record ProjetoResponseEtapa1DTO(
                 entity.getId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),
+                entity.getSituacao(),
                 entity.getInstituicao() != null
                         ? InstituicaoResponseDTO.toResponse(entity.getInstituicao())
                         : null,

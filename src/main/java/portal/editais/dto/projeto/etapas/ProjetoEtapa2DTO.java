@@ -11,7 +11,7 @@ public record ProjetoEtapa2DTO(
         String nomeProjeto,
 
         @NotNull(message = "O campo edital não pode ser vazio.")
-        Integer edital,
+        Integer idEdital,
 
         @Size(max = 1500, message = "O campo resumo não pode ter mais de 1500 caracteres.")
         String resumo,

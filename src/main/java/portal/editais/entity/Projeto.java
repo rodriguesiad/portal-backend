@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +18,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
+import portal.editais.enumeration.SituacaoProjeto;
 
 @Data
 @Entity
@@ -44,8 +47,9 @@ public class Projeto {
     @Column(length = 200)
     private String nomeProjeto;
 
-    @Column()
-    private Integer edital; // TODO: Alterar para entidade Edital
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_edital")
+    private Edital edital;
 
     @Column(length = 1500)
     private String resumo;
@@ -72,6 +76,10 @@ public class Projeto {
     private Boolean comprometeuPrestacaoContas;
 
     private Boolean autorizouMonitoramentoAuditoria;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SituacaoProjeto situacao;
 
     @PrePersist
     protected void prePersist() {

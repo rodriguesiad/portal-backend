@@ -16,13 +16,16 @@ import portal.editais.dto.projeto.etapas.ProjetoEtapa4DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa5DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa6DTO;
 import portal.editais.entity.Atividade;
+import portal.editais.entity.Edital;
 import portal.editais.entity.Instituicao;
 import portal.editais.entity.Localizacao;
 import portal.editais.entity.Municipio;
 import portal.editais.entity.PlanoExecucao;
-import portal.editais.entity.PublicoBeneficiado;
 import portal.editais.entity.Projeto;
+import portal.editais.entity.PublicoBeneficiado;
 import portal.editais.entity.User;
+import portal.editais.enumeration.SituacaoProjeto;
+import portal.editais.repository.EditalRepository;
 import portal.editais.repository.MunicipioRepository;
 import portal.editais.repository.ProjetoRepository;
 import portal.editais.service.instituicao.InstituicaoService;
@@ -33,12 +36,14 @@ public class ProjetoServiceImpl implements ProjetoService {
     private ProjetoRepository repository;
     private InstituicaoService instituicaoService;
     private MunicipioRepository municipioRepository;
+    private EditalRepository editalRepository;
 
     protected ProjetoServiceImpl(ProjetoRepository repository, InstituicaoService instituicaoService,
-            MunicipioRepository municipioRepository) {
+            MunicipioRepository municipioRepository, EditalRepository editalRepository) {
         this.repository = repository;
         this.instituicaoService = instituicaoService;
         this.municipioRepository = municipioRepository;
+        this.editalRepository = editalRepository;
     }
 
     @Override
@@ -49,6 +54,7 @@ public class ProjetoServiceImpl implements ProjetoService {
 
         projeto.setInstituicao(instituicao);
         projeto.setAutor(getLoggedInUser());
+        projeto.setSituacao(SituacaoProjeto.RASCUNHO);
 
         return repository.save(projeto);
     }
@@ -60,8 +66,14 @@ public class ProjetoServiceImpl implements ProjetoService {
         validateAutor(projeto.getAutor().getId());
         validarEtapa2(projeto);
 
+        Optional<Edital> edital = editalRepository.findById(dto.idEdital());
+
+        if (edital.isEmpty()) {
+            throw new ApiException("Edital não encontrado");
+        }
+
         projeto.setNomeProjeto(dto.nomeProjeto());
-        projeto.setEdital(dto.edital());
+        projeto.setEdital(edital.get());
         projeto.setResumo(dto.resumo());
         projeto.setJustificativaMerito(dto.justificativaMerito());
 
@@ -168,6 +180,7 @@ public class ProjetoServiceImpl implements ProjetoService {
         projeto.setAutorizouTratamentoDadosLgpd(dto.autorizouTratamentoDadosLgpd());
         projeto.setAutorizouMonitoramentoAuditoria(dto.autorizouMonitoramentoAuditoria());
         projeto.setComprometeuPrestacaoContas(dto.comprometeuPrestacaoContas());
+        projeto.setSituacao(SituacaoProjeto.EM_ANALISE);
 
         return repository.save(projeto);
     }
