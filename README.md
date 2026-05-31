@@ -60,35 +60,104 @@ A **EcoVertice Tocantins** é uma solução tecnológica integrada de ponta a po
 
 Antes de começar, certifique-se de possuir:
 
-- Java 21
-- Maven 3.9+
-- Docker e Docker Compose (opcional)
 - Git
 
 ---
 
-### Passo a Passo
-
-#### 1. Clone o repositório
+### 1. Clone o repositório (obrigatório)
 
 ```bash
 git clone <url-do-repositorio>
 cd portal-editais-api
 ```
 
-#### 2. Configure as variáveis de ambiente
+A clonagem é necessária tanto para execução via Docker quanto para execução local, pois o `docker-compose` e as configurações da aplicação fazem parte do projeto.
 
-Crie ou ajuste o arquivo de configuração conforme o ambiente utilizado.
+---
+
+### 🐳 Forma recomendada (Docker)
+
+A aplicação já está configurada para execução completa via Docker, incluindo banco de dados e API.
+
+```bash
+docker-compose up --build
+```
+
+Isso irá subir:
+
+- 🔸 **API Spring Boot** na porta `8282`
+- 🔸 **MySQL** na porta `3309` (host) / `3306` (container)
+
+---
+
+### 🖥️ Execução local (opcional)
+
+Caso deseje executar diretamente na máquina (fora do Docker), é necessário configurar o ambiente manualmente.
+
+### Pré-requisitos
+
+- Java 21
+- Maven 3.9+
+- MySQL 8
+- Git
+
+---
+
+#### 1. Iniciar o MySQL local
+
+Antes de iniciar a aplicação, certifique-se de que o serviço MySQL está rodando na sua máquina.
+
+A porta padrão utilizada é:
+
+```
+3306
+```
+
+Caso o seu MySQL esteja rodando em outra porta, você deve ajustar a URL de conexão.
+
+---
+
+#### 2. Criar a base de dados
+
+No seu MySQL local, crie o banco de dados manualmente:
+
+```sql
+CREATE DATABASE portaldb;
+```
+
+---
+
+#### 3. Configurar o `application.properties`
+
+Ajuste as credenciais conforme seu ambiente local:
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/portal_editais
+spring.datasource.url=jdbc:mysql://localhost:3306/portaldb
 spring.datasource.username=root
 spring.datasource.password=senha
 ```
 
+📌 Observações:
+- `localhost:3306` → pode variar conforme a porta configurada no seu MySQL local
+- `portaldb` → deve existir previamente no seu banco
+- `username/password` → devem ser os mesmos do seu ambiente MySQL
+
+---
 #### 3. Execute a aplicação
 
-##### Com Maven
+Antes de iniciar a aplicação, execute o build completo do projeto:
+
+```bash
+./mvnw clean install
+```
+
+ou
+
+```bash
+mvn clean install
+```
+
+Em seguida, inicie a aplicação:
 
 ```bash
 ./mvnw spring-boot:run
@@ -100,13 +169,7 @@ ou
 mvn spring-boot:run
 ```
 
-##### Com Docker
-
-```bash
-docker-compose up --build
-```
-
----
+## 📖 Acesso à aplicação
 
 ### Serviços Disponíveis
 
@@ -119,8 +182,6 @@ Ao iniciar utilizando Docker, os seguintes serviços serão disponibilizados:
 | MySQL (Container) | 3306 |
 
 ---
-
-### Acesse a Aplicação
 
 #### API
 
@@ -142,24 +203,12 @@ http://localhost:8282/swagger-ui.html
 
 ---
 
-### Scripts Disponíveis
-
-| Comando | Descrição |
-|----------|-----------|
-| `./mvnw spring-boot:run` | Executa a aplicação em desenvolvimento |
-| `./mvnw clean package` | Gera o pacote da aplicação |
-| `./mvnw test` | Executa os testes |
-| `docker-compose up --build` | Sobe aplicação e banco via Docker |
-| `docker-compose down` | Encerra os containers |
-
----
-
 ## ✅ Checklist de Objetivos
 
 ### 🏛️ Módulos da Plataforma
 
 - [x] Cadastro e autenticação de usuários
-- [x] Gestão de perfis e permissões (RBAC)
+- [x] Gestão de perfis e permissões
 - [x] Submissão e gerenciamento de projetos
 - [x] Fluxo de análise e aprovação de editais
 - [x] Registro de evidências e documentos
@@ -172,8 +221,6 @@ http://localhost:8282/swagger-ui.html
 - [x] Persistência em banco relacional
 - [x] Tratamento centralizado de exceções
 - [x] Validação de requisições
-- [ ] Pipeline CI/CD
-- [ ] Testes automatizados de integração
 
 ### 🔐 Segurança
 
@@ -191,11 +238,18 @@ http://localhost:8282/swagger-ui.html
 portal-editais-api/
 ├── src/
 │   ├── main/
-│   │   ├── java/
+│   │   ├── java/portal/editais/
+|   |    ├── config/
+|   |    |   ├── controller/
+|   |    |   ├── dto/
+|   |    |   ├── entity/
+|   |    |   ├── repository/
+|   |    |   ├── service/
+|   |    |   ├── specification/
+|   |    |   ├── validations/
 │   │   ├── resources/
-│   │   └── docker/
-│   └── test/
-├── docs/
+├── .env
+├── Dockerfile
 ├── docker-compose.yml
 ├── pom.xml
 ├── mvnw
@@ -203,17 +257,47 @@ portal-editais-api/
 └── README.md
 ```
 
----
-
 ## 🔐 Autenticação
 
 A API utiliza autenticação baseada em **JWT (JSON Web Token)**.
 
+### 👤 Perfis de acesso (Roles)
+
+O sistema possui os seguintes perfis de usuário:
+
+| Perfil | Responsabilidade |
+|--------|------------------|
+| **PROPONENTE** | Responsável submeter projetos aos editais |
+| **ADMINISTRADOR** | Responsável por gerenciar editais |
+| **AVALIADOR** | Responsável por analisar e avaliar os projetos submetidos |
+| **AUDITOR** | Responsável por acompanhar, fiscalizar e auditar os projetos e seus registros |
+
+---
+
+### 🔑 Usuários de exemplo (data.sql)
+
+O sistema já possui usuários previamente cadastrados para testes:
+
+- Perfis disponíveis:
+  - PROPONENTE
+  - ADMINISTRADOR
+  - AVALIADOR
+
+- Senha padrão de todos os usuários de exemplo:
+```
+12345678
+```
+
+---
+
 ### Endpoints Públicos
 
-- Cadastro de usuário
+- Cadastro de usuário PROPONENTE
 - Login
-- Recuperação de acesso (quando habilitado)
+- Listagem de Editais
+
+---
+
 
 ### Endpoints Protegidos
 
@@ -235,49 +319,69 @@ Após iniciar a aplicação, acesse:
 http://localhost:8282/swagger-ui/index.html
 ```
 
----
-
-## 🤝 Contribuindo
-
-Contribuições são muito bem-vindas.
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature
-
-```bash
-git checkout -b feature/minha-feature
-```
-
-3. Realize suas alterações
-4. Faça commit utilizando Conventional Commits
-
-```bash
-git commit -m "feat: adiciona nova funcionalidade"
-```
-
-5. Envie para seu fork
-
-```bash
-git push origin feature/minha-feature
-```
-
-6. Abra um Pull Request
-
-> 💡 Utilize o padrão Conventional Commits para manter o histórico organizado.
-
----
-
 ## 📄 Licença
 
 Este projeto está sob licença privada. Todos os direitos reservados © EcoVertice Tocantins.
 
 ---
 
-## 🤖 Aviso sobre Inteligência Artificial
+## 🤖 Uso de Inteligência Artificial no Desenvolvimento (Backend)
 
-> Este projeto foi desenvolvido com o auxílio de ferramentas de Inteligência Artificial generativa para apoio na modelagem, implementação, revisão de código, documentação técnica e automação de tarefas de desenvolvimento.
->
-> O uso dessas ferramentas ocorreu sob supervisão da equipe responsável, que manteve a responsabilidade integral pelas decisões arquiteturais, validação das regras de negócio, segurança e qualidade do software.
+> O backend do sistema utilizou ferramentas de Inteligência Artificial generativa de forma pontual e assistida, com foco em aceleração de tarefas técnicas, geração de dados iniciais e apoio à estruturação de funcionalidades.
+
+### 🛠️ Ferramentas Utilizadas
+
+| Ferramenta | Papel no Projeto |
+|------------|-----------------|
+| **ChatGPT (OpenAI - versão online)** | Suporte em dúvidas técnicas e geração de dados iniciais para `data.sql` |
+| **ChatGPT (Codex)** | Auxílio na criação de algumas das estruturas de CRUD, endpoints REST e serviços Spring Boot. Apoio na configuração e implementação do servidor de arquivos e integração com MinIO |
+
+---
+
+### 💬 Exemplos de Prompts Utilizados
+
+#### 🗄️ Geração de dados iniciais (data.sql)
+
+```
+Gere INSERTs SQL com dados válidos e que façam sentido para fazer nessa tabela:
+
+[SQL da tabela utilizado]
+
+Requisitos:
+- Dados fictícios, mas realistas e consistentes com o domínio ambiental e REDD+
+- Respeitar tipos de dados e constraints
+- Garantir coerência entre registros
+
+```
+
+---
+
+#### 📦 Integração com servidor de arquivos (MinIO)
+
+```
+Estou usando Spring Boot com MinIO rodando via Docker.
+
+Configure:
+- Upload de arquivos para MinIO
+- Endpoint para upload de documentos de editais
+- Download público via URL assinada ou endpoint protegido
+- Persistência da referência do arquivo no banco de dados
+- Suporte a múltiplos arquivos por edital
+```
+
+---
+
+### ⚠️ Supervisão Humana
+
+Todo uso de Inteligência Artificial no backend foi realizado como ferramenta de apoio ao desenvolvimento.
+
+A equipe manteve responsabilidade total sobre:
+- Arquitetura do sistema
+- Regras de negócio
+- Segurança e autenticação
+- Qualidade e validação do código gerado
+
+O objetivo do uso de IA foi **acelerar a implementação de estruturas repetitivas e técnicas**, mantendo controle humano sobre decisões críticas do sistema.
 
 ---
 
