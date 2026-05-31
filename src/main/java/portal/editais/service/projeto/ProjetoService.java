@@ -47,6 +47,8 @@ public interface ProjetoService {
 
     ProjetoResponseDTO buscarProjetoResponse(Integer id);
 
+    ProjetoResponseDTO iniciarAvaliacao(Integer id);
+
     ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto);
 
     ProjetoResponseDTO validarEvidencia(Integer evidenciaId, ValidarEvidenciaDTO dto);

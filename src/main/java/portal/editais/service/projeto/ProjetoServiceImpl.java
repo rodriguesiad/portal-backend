@@ -255,6 +255,18 @@ public class ProjetoServiceImpl implements ProjetoService {
 
     @Override
     @Transactional
+    public ProjetoResponseDTO iniciarAvaliacao(Integer id) {
+        Projeto projeto = buscarProjeto(id);
+        if (projeto.getStatus() != StatusProjeto.SUBMETIDO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Somente projetos submetidos podem ser enviados para avaliação.");
+        }
+        projeto.setStatus(StatusProjeto.EM_AVALIACAO);
+        return toResponse(repository.save(projeto));
+    }
+
+    @Override
+    @Transactional
     public ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto) {
         Projeto projeto = buscarProjeto(id);
         validateAutorRuntime(projeto);

@@ -129,6 +129,13 @@ public class ProjetoController {
         return ResponseEntity.ok(service.buscarProjetoResponse(id));
     }
 
+    @Secured({ "ROLE_ADMINISTRADOR" })
+    @PostMapping("/{id}/iniciar-avaliacao")
+    @Operation(description = "Altera um projeto submetido para em avaliação")
+    public ResponseEntity<ProjetoResponseDTO> iniciarAvaliacao(@PathVariable Integer id) {
+        return ResponseEntity.ok(service.iniciarAvaliacao(id));
+    }
+
     @Secured({ "ROLE_PROPONENTE" })
     @PostMapping("/{id}/evidencias")
     public ResponseEntity<ProjetoResponseDTO> criarEvidencia(
