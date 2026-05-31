@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.swagger.v3.oas.annotations.tags.Tag;
 import portal.editais.dto.projeto.ProjetoResponseDTO;
 import portal.editais.dto.projeto.ValidarEvidenciaDTO;
 import portal.editais.service.projeto.ProjetoService;
 
 @RestController
+@Tag(name = "Acompanhamento de Projetos")
 public class ProjetoAcompanhamentoController {
 
     private final ProjetoService service;
