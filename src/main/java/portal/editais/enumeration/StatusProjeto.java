@@ -1,6 +1,6 @@
 package portal.editais.enumeration;
 
-public enum StatusSubprojeto {
+public enum StatusProjeto {
     RASCUNHO,
     SUBMETIDO,
     EM_AVALIACAO,

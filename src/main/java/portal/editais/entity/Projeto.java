@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-import portal.editais.enumeration.StatusSubprojeto;
+import portal.editais.enumeration.StatusProjeto;
 
 @Getter
 @Setter
@@ -82,7 +82,7 @@ public class Projeto {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private StatusSubprojeto status = StatusSubprojeto.RASCUNHO;
+    private StatusProjeto status = StatusProjeto.RASCUNHO;
 
     private Boolean declarouVeracidadeInformacoes;
 
@@ -96,7 +96,7 @@ public class Projeto {
     protected void prePersist() {
         this.createdAt = LocalDateTime.now();
         if (this.status == null) {
-            this.status = StatusSubprojeto.RASCUNHO;
+            this.status = StatusProjeto.RASCUNHO;
         }
     }
 

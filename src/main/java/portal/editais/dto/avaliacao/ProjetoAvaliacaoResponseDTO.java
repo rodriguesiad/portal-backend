@@ -1,7 +1,7 @@
 package portal.editais.dto.avaliacao;
 
 import portal.editais.entity.Projeto;
-import portal.editais.enumeration.StatusSubprojeto;
+import portal.editais.enumeration.StatusProjeto;
 
 public record ProjetoAvaliacaoResponseDTO(
     Integer id,
@@ -9,7 +9,7 @@ public record ProjetoAvaliacaoResponseDTO(
     String proponente,
     String edital,
     String resumo,
-    StatusSubprojeto status
+    StatusProjeto status
 ) {
     public static ProjetoAvaliacaoResponseDTO toResponse(Projeto projeto) {
         return new ProjetoAvaliacaoResponseDTO(

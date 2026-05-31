@@ -33,7 +33,7 @@ import portal.editais.entity.Projeto;
 import portal.editais.entity.User;
 import portal.editais.enumeration.ContextoDocumento;
 import portal.editais.enumeration.Profile;
-import portal.editais.enumeration.StatusSubprojeto;
+import portal.editais.enumeration.StatusProjeto;
 import portal.editais.repository.AtividadeProjetoRepository;
 import portal.editais.repository.DocumentoRepository;
 import portal.editais.repository.EditalRepository;
@@ -200,7 +200,7 @@ public class ProjetoServiceImpl implements ProjetoService {
         projeto.setAutorizouTratamentoDadosLgpd(dto.autorizouTratamentoDadosLgpd());
         projeto.setAutorizouMonitoramentoAuditoria(dto.autorizouMonitoramentoAuditoria());
         projeto.setComprometeuPrestacaoContas(dto.comprometeuPrestacaoContas());
-        projeto.setStatus(StatusSubprojeto.SUBMETIDO);
+        projeto.setStatus(StatusProjeto.SUBMETIDO);
 
         return repository.save(projeto);
     }
@@ -214,7 +214,7 @@ public class ProjetoServiceImpl implements ProjetoService {
     @Transactional
     public List<ProjetoResponseDTO> listarProjetosDoProponente() {
         return repository.findByAutorId(getLoggedInUser().getId()).stream()
-                .filter(projeto -> projeto.getStatus() == StatusSubprojeto.EM_EXECUCAO)
+                .filter(projeto -> projeto.getStatus() == StatusProjeto.EM_EXECUCAO)
                 .map(this::toResponse)
                 .toList();
     }
@@ -245,7 +245,7 @@ public class ProjetoServiceImpl implements ProjetoService {
     public ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto) {
         Projeto projeto = buscarProjeto(id);
         validateAutorRuntime(projeto);
-        if (projeto.getStatus() != StatusSubprojeto.EM_EXECUCAO) {
+        if (projeto.getStatus() != StatusProjeto.EM_EXECUCAO) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Projeto ainda nao esta em execucao.");
         }
 

@@ -29,7 +29,7 @@ import portal.editais.entity.Projeto;
 import portal.editais.entity.User;
 import portal.editais.enumeration.Profile;
 import portal.editais.enumeration.StatusEdital;
-import portal.editais.enumeration.StatusSubprojeto;
+import portal.editais.enumeration.StatusProjeto;
 import portal.editais.repository.AvaliacaoCriterioRepository;
 import portal.editais.repository.CriterioAvaliacaoRepository;
 import portal.editais.repository.EditalRepository;
@@ -118,7 +118,7 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
             avaliacao.setComentario(nota.comentario());
             avaliacaoRepository.save(avaliacao);
         });
-        projeto.setStatus(StatusSubprojeto.EM_AVALIACAO);
+        projeto.setStatus(StatusProjeto.EM_AVALIACAO);
         projetoRepository.save(projeto);
     }
 
@@ -154,8 +154,8 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
 
         projetoRepository.findByEditalId(editalId).forEach(projeto -> {
             projeto.setStatus(projeto.getId().equals(vencedor.getId())
-                ? StatusSubprojeto.EM_EXECUCAO
-                : StatusSubprojeto.REPROVADO);
+                ? StatusProjeto.EM_EXECUCAO
+                : StatusProjeto.REPROVADO);
             if (projeto.getId().equals(vencedor.getId())) {
                 projeto.setAuditor(auditor);
                 criarAtividadesDeAcompanhamento(projeto);
