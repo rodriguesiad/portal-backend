@@ -72,17 +72,12 @@ public class EditaisDataSeeder implements CommandLineRunner {
 
     private void criarFrentesAtuacao() {
         List<FrenteAtuacao> frentes = List.of(
-                FrenteAtuacao.builder().codigo("AGRICULTURA").nome("Agricultura").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("QUILOMBOLA").nome("Quilombola").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("RESTAURACAO").nome("Restauração").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("CONSERVACAO").nome("Conservação").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("POVOS_INDIGENAS").nome("Povos Indígenas").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("RECURSOS_HIDRICOS").nome("Recursos Hídricos").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("EDUCACAO_AMBIENTAL").nome("Educação Ambiental").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("PREVENCAO_QUEIMADAS").nome("Prevenção de Queimadas").ativo(true)
-                        .build(),
-                FrenteAtuacao.builder().codigo("CARBONO").nome("Carbono").ativo(true).build(),
-                FrenteAtuacao.builder().codigo("BIODIVERSIDADE").nome("Biodiversidade").ativo(true).build());
+                FrenteAtuacao.builder().codigo("AGRICULTURA").nome("Agricultura Familiar").ativo(true).build(),
+                FrenteAtuacao.builder().codigo("QUILOMBOLA").nome("Políticas Públicas Estruturantes").ativo(true).build(),
+                FrenteAtuacao.builder().codigo("RESTAURACAO").nome("Produção Sustentável").ativo(true).build(),
+                FrenteAtuacao.builder().codigo("CONSERVACAO").nome("Fortalecimento Institucional").ativo(true).build(),
+                FrenteAtuacao.builder().codigo("POVOS_INDIGENAS").nome("Territórios Indígenas").ativo(true).build(),
+                FrenteAtuacao.builder().codigo("RECURSOS_HIDRICOS").nome("Comunidades Tradicionais").ativo(true).build());
 
         frentes.stream()
                 .filter(frente -> !frenteAtuacaoRepository.existsByCodigo(frente.getCodigo()))
