@@ -36,6 +36,7 @@ import portal.editais.repository.EditalRepository;
 import portal.editais.repository.EvidenciaRepository;
 import portal.editais.repository.ProjetoRepository;
 import portal.editais.repository.UserRepository;
+import portal.editais.service.edital.EditalService;
 
 @Service
 public class AvaliacaoServiceImpl implements AvaliacaoService {
@@ -46,6 +47,7 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
     private final AvaliacaoCriterioRepository avaliacaoRepository;
     private final UserRepository userRepository;
     private final EvidenciaRepository evidenciaRepository;
+    private final EditalService editalService;
 
     public AvaliacaoServiceImpl(
             EditalRepository editalRepository,
@@ -53,29 +55,35 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
             CriterioAvaliacaoRepository criterioRepository,
             AvaliacaoCriterioRepository avaliacaoRepository,
             UserRepository userRepository,
-            EvidenciaRepository evidenciaRepository) {
+            EvidenciaRepository evidenciaRepository,
+            EditalService editalService) {
         this.editalRepository = editalRepository;
         this.projetoRepository = projetoRepository;
         this.criterioRepository = criterioRepository;
         this.avaliacaoRepository = avaliacaoRepository;
         this.userRepository = userRepository;
         this.evidenciaRepository = evidenciaRepository;
+        this.editalService = editalService;
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<EditalResumoResponseDTO> listarEditaisDoAvaliador() {
+        editalService.atualizarStatusPorDatas();
         return editalRepository.findByAvaliadoresId(getLoggedInUser().getId())
             .stream()
+            .filter(edital -> edital.getStatus() == StatusEdital.EM_AVALIACAO)
             .map(EditalResumoResponseDTO::toResponse)
             .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ProjetoAvaliacaoResponseDTO> listarProjetos(Integer editalId) {
+        editalService.atualizarStatusPorDatas();
         validarAvaliadorDoEdital(editalId);
         return projetoRepository.findByEditalId(editalId).stream()
+            .filter(this::isProjetoAvaliavel)
             .map(ProjetoAvaliacaoResponseDTO::toResponse)
             .toList();
     }
@@ -83,6 +91,7 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
     @Override
     @Transactional
     public void salvarAvaliacao(Integer projetoId, AvaliacaoDTO dto) {
+        editalService.atualizarStatusPorDatas();
         User avaliador = getLoggedInUser();
         Projeto projeto = buscarProjeto(projetoId);
         Edital edital = projeto.getEdital();
@@ -123,10 +132,12 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<RankingPropostaResponseDTO> ranking(Integer editalId) {
+        editalService.atualizarStatusPorDatas();
         Edital edital = validarAvaliadorDoEdital(editalId);
         return projetoRepository.findByEditalId(editalId).stream()
+            .filter(this::isProjetoAvaliavel)
             .map(projeto -> montarRanking(edital, projeto))
             .sorted(Comparator.comparing(RankingPropostaResponseDTO::notaFinal).reversed())
             .toList();
@@ -135,6 +146,7 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
     @Override
     @Transactional
     public ProjetoResponseDTO selecionarVencedor(Integer editalId, SelecionarVencedorDTO dto) {
+        editalService.atualizarStatusPorDatas();
         Edital edital = validarAvaliadorDoEdital(editalId);
         User auditor = userRepository.findById(dto.auditorId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Auditor nao encontrado."));
@@ -154,7 +166,7 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
 
         projetoRepository.findByEditalId(editalId).forEach(projeto -> {
             projeto.setStatus(projeto.getId().equals(vencedor.getId())
-                ? StatusProjeto.EM_EXECUCAO
+                ? StatusProjeto.APROVADO
                 : StatusProjeto.REPROVADO);
             if (projeto.getId().equals(vencedor.getId())) {
                 projeto.setAuditor(auditor);
@@ -213,6 +225,10 @@ public class AvaliacaoServiceImpl implements AvaliacaoService {
             return texto;
         }
         return texto.substring(0, tamanhoMaximo);
+    }
+
+    private boolean isProjetoAvaliavel(Projeto projeto) {
+        return projeto.getStatus() == StatusProjeto.SUBMETIDO || projeto.getStatus() == StatusProjeto.EM_AVALIACAO;
     }
 
     private Edital validarAvaliadorDoEdital(Integer editalId) {

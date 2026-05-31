@@ -40,6 +40,7 @@ import portal.editais.entity.PublicoBeneficiado;
 import portal.editais.entity.User;
 import portal.editais.enumeration.ContextoDocumento;
 import portal.editais.enumeration.Profile;
+import portal.editais.enumeration.StatusEvidencia;
 import portal.editais.enumeration.StatusProjeto;
 import portal.editais.repository.AtividadeProjetoRepository;
 import portal.editais.repository.DocumentoRepository;
@@ -222,7 +223,8 @@ public class ProjetoServiceImpl implements ProjetoService {
     @Transactional
     public List<ProjetoResponseDTO> listarProjetosDoProponente() {
         return repository.findByAutorId(getLoggedInUser().getId()).stream()
-                .filter(projeto -> projeto.getStatus() == StatusProjeto.EM_EXECUCAO)
+                .filter(projeto -> projeto.getStatus() == StatusProjeto.APROVADO
+                        || projeto.getStatus() == StatusProjeto.EM_EXECUCAO)
                 .map(this::toResponse)
                 .toList();
     }
@@ -242,7 +244,10 @@ public class ProjetoServiceImpl implements ProjetoService {
         User usuario = getLoggedInUser();
         boolean dono = projeto.getAutor() != null && projeto.getAutor().getId().equals(usuario.getId());
         boolean auditor = projeto.getAuditor() != null && projeto.getAuditor().getId().equals(usuario.getId());
-        if (!dono && !auditor && usuario.getProfile() != Profile.ADMINISTRADOR) {
+        boolean avaliador = projeto.getEdital() != null
+                && projeto.getEdital().getAvaliadores().stream()
+                        .anyMatch(avaliadorVinculado -> avaliadorVinculado.getId().equals(usuario.getId()));
+        if (!dono && !auditor && !avaliador && usuario.getProfile() != Profile.ADMINISTRADOR) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito ao projeto.");
         }
         return toResponse(projeto);
@@ -253,8 +258,8 @@ public class ProjetoServiceImpl implements ProjetoService {
     public ProjetoResponseDTO criarEvidencia(Integer id, EvidenciaDTO dto) {
         Projeto projeto = buscarProjeto(id);
         validateAutorRuntime(projeto);
-        if (projeto.getStatus() != StatusProjeto.EM_EXECUCAO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Projeto ainda nao esta em execucao.");
+        if (projeto.getStatus() != StatusProjeto.APROVADO && projeto.getStatus() != StatusProjeto.EM_EXECUCAO) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Projeto ainda nao esta aprovado para acompanhamento.");
         }
 
         Documento documento = documentoRepository.findById(dto.fotoDocumentoId())
@@ -294,7 +299,14 @@ public class ProjetoServiceImpl implements ProjetoService {
         if (projeto.getAuditor() == null || !projeto.getAuditor().getId().equals(auditor.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Acesso restrito ao auditor do projeto.");
         }
-        evidencia.setStatus(dto.status());
+        StatusEvidencia status = dto.status() == StatusEvidencia.REJEITADA
+                ? StatusEvidencia.REPROVADA
+                : dto.status();
+        if ((status == StatusEvidencia.REPROVADA || status == StatusEvidencia.APROVADA_COM_RESSALVAS)
+                && (dto.comentario() == null || dto.comentario().isBlank())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Informe um parecer para reprovar ou aprovar com ressalvas.");
+        }
+        evidencia.setStatus(status);
         evidencia.setComentarioAuditor(dto.comentario());
         evidencia.setValidadoPor(auditor);
         evidenciaRepository.save(evidencia);

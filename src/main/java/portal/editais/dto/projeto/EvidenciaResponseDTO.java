@@ -13,7 +13,9 @@ public record EvidenciaResponseDTO(
     String descricao,
     StatusEvidencia status,
     String comentarioAuditor,
-    LocalDateTime criadoEm
+    String validadoPor,
+    LocalDateTime criadoEm,
+    LocalDateTime atualizadoEm
 ) {
     public static EvidenciaResponseDTO toResponse(Evidencia evidencia) {
         return new EvidenciaResponseDTO(
@@ -24,7 +26,9 @@ public record EvidenciaResponseDTO(
             evidencia.getDescricao(),
             evidencia.getStatus(),
             evidencia.getComentarioAuditor(),
-            evidencia.getCriadoEm()
+            evidencia.getValidadoPor() != null ? evidencia.getValidadoPor().getNome() : null,
+            evidencia.getCriadoEm(),
+            evidencia.getAtualizadoEm()
         );
     }
 }

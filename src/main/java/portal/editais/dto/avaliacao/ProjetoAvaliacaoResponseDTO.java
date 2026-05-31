@@ -9,6 +9,9 @@ public record ProjetoAvaliacaoResponseDTO(
     String proponente,
     String edital,
     String resumo,
+    String latitude,
+    String longitude,
+    String regiaoImediata,
     StatusProjeto status
 ) {
     public static ProjetoAvaliacaoResponseDTO toResponse(Projeto projeto) {
@@ -18,6 +21,11 @@ public record ProjetoAvaliacaoResponseDTO(
             projeto.getAutor() != null ? projeto.getAutor().getNome() : null,
             projeto.getEdital() != null ? projeto.getEdital().getTitulo() : null,
             projeto.getResumo(),
+            projeto.getLocalizacao() != null ? projeto.getLocalizacao().getLatitude() : null,
+            projeto.getLocalizacao() != null ? projeto.getLocalizacao().getLongitude() : null,
+            projeto.getEdital() != null && projeto.getEdital().getRegiaoImediata() != null
+                ? projeto.getEdital().getRegiaoImediata().getNome()
+                : null,
             projeto.getStatus()
         );
     }

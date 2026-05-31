@@ -123,7 +123,7 @@ public class ProjetoController {
         return ResponseEntity.ok(service.listarProjetosDoAuditor());
     }
 
-    @Secured({ "ROLE_PROPONENTE", "ROLE_AUDITOR", "ROLE_ADMINISTRADOR" })
+    @Secured({ "ROLE_PROPONENTE", "ROLE_AUDITOR", "ROLE_AVALIADOR", "ROLE_ADMINISTRADOR" })
     @GetMapping("/{id}")
     public ResponseEntity<ProjetoResponseDTO> buscarProjeto(@PathVariable Integer id) {
         return ResponseEntity.ok(service.buscarProjetoResponse(id));
