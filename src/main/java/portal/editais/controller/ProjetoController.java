@@ -1,16 +1,26 @@
 package portal.editais.controller;
 
+import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.genai.errors.ApiException;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import portal.editais.dto.projeto.ProjetoFilterDTO;
+import portal.editais.dto.projeto.ProjetoIndicadoresDTO;
+import portal.editais.dto.projeto.ProjetoResumoResponseDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
@@ -83,6 +93,44 @@ public class ProjetoController {
 
         Projeto entity = service.implementaProjetoEtapa5(id, dto);
         return ResponseEntity.ok(ProjetoResponseEtapa5DTO.toResponse(entity));
+    }
+
+    @GetMapping("/meus")
+    @PageableAsQueryParam
+    public ResponseEntity<Page<ProjetoResumoResponseDTO>> listarProjetosDoAutor(
+            Pageable pageable,
+            ProjetoFilterDTO request) throws Exception {
+
+        return ResponseEntity.ok(
+                service.listarProjetosDoAutor(pageable, request)
+                        .map(ProjetoResumoResponseDTO::toResponse));
+    }
+
+    @GetMapping("/meus/indicadores")
+    public ResponseEntity<ProjetoIndicadoresDTO> obterIndicadoresDoAutor() throws ApiException {
+
+        return ResponseEntity.ok(
+                service.obterIndicadoresDoAutor());
+    }
+
+    @GetMapping
+    @PageableAsQueryParam
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','AVALIADOR','AUDITOR')")
+    public ResponseEntity<Page<ProjetoResumoResponseDTO>> listarTodosProjetos(
+            Pageable pageable,
+            ProjetoFilterDTO request) throws ApiException {
+
+        return ResponseEntity.ok(
+                service.listarTodosProjetos(pageable, request)
+                        .map(ProjetoResumoResponseDTO::toResponse));
+    }
+
+    @GetMapping("/indicadores")
+    @PreAuthorize("hasAnyRole('ADMINISTRADOR','AVALIADOR','AUDITOR')")
+    public ResponseEntity<ProjetoIndicadoresDTO> obterIndicadoresGerais() throws ApiException {
+
+        return ResponseEntity.ok(
+                service.obterIndicadoresGerais());
     }
 
 }

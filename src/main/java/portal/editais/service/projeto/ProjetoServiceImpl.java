@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import portal.editais.config.exception.ApiException;
+import portal.editais.dto.projeto.ProjetoFilterDTO;
+import portal.editais.dto.projeto.ProjetoIndicadoresDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
@@ -29,6 +34,7 @@ import portal.editais.repository.EditalRepository;
 import portal.editais.repository.MunicipioRepository;
 import portal.editais.repository.ProjetoRepository;
 import portal.editais.service.instituicao.InstituicaoService;
+import portal.editais.specification.ProjetoSpecification;
 
 @Service
 public class ProjetoServiceImpl implements ProjetoService {
@@ -188,6 +194,132 @@ public class ProjetoServiceImpl implements ProjetoService {
     @Override
     public Projeto findById(Integer id) throws ApiException {
         return repository.findById(id).orElseThrow(() -> new ApiException("Projeto não encontrado: " + id));
+    }
+
+    @Override
+    public Page<Projeto> listarProjetosDoAutor(
+            Pageable pageable,
+            ProjetoFilterDTO filterRequest) throws ApiException {
+
+        List<SituacaoProjeto> situacoes = null;
+
+        if (!ObjectUtils.isEmpty(filterRequest.situacoes())) {
+            try {
+                situacoes = filterRequest.situacoes()
+                        .stream()
+                        .map(SituacaoProjeto::valueOf)
+                        .toList();
+            } catch (IllegalArgumentException ex) {
+                throw new ApiException(
+                        "Situação inválida: " + filterRequest.situacoes());
+            }
+        }
+
+        ProjetoSpecification specification = ProjetoSpecification.builder()
+                .autorId(getLoggedInUser().getId())
+                .nomeProjeto(filterRequest.nomeProjeto())
+                .tituloEdital(filterRequest.tituloEdital())
+                .situacoes(situacoes)
+                .build();
+
+        return repository.findAll(specification, pageable);
+    }
+
+    @Override
+    public Page<Projeto> listarTodosProjetos(
+            Pageable pageable,
+            ProjetoFilterDTO filterRequest) throws ApiException {
+
+        List<SituacaoProjeto> situacoes = null;
+
+        if (!ObjectUtils.isEmpty(filterRequest.situacoes())) {
+            try {
+                situacoes = filterRequest.situacoes()
+                        .stream()
+                        .map(SituacaoProjeto::valueOf)
+                        .toList();
+            } catch (IllegalArgumentException ex) {
+                throw new ApiException(
+                        "Situação inválida: " + filterRequest.situacoes());
+            }
+        }
+
+        ProjetoSpecification specification = ProjetoSpecification.builder()
+                .nomeProjeto(filterRequest.nomeProjeto())
+                .tituloEdital(filterRequest.tituloEdital())
+                .situacoes(situacoes)
+                .build();
+
+        return repository.findAll(specification, pageable);
+    }
+
+    @Override
+    public ProjetoIndicadoresDTO obterIndicadoresDoAutor() throws ApiException {
+
+        try {
+
+            Integer autorId = getLoggedInUser().getId();
+
+            Long totalSubmissoes = repository.countByAutorId(autorId);
+
+            Long emAnalise = repository.countByAutorIdAndSituacao(
+                    autorId,
+                    SituacaoProjeto.EM_ANALISE);
+
+            Long aprovados = repository.countByAutorIdAndSituacao(
+                    autorId,
+                    SituacaoProjeto.APROVADO);
+
+            Long analisandos = repository.countByAutorIdAndSituacao(
+                    autorId,
+                    SituacaoProjeto.ANALISADO);
+
+            Long reprovados = repository.countByAutorIdAndSituacao(
+                    autorId,
+                    SituacaoProjeto.REPROVADO);
+
+            return new ProjetoIndicadoresDTO(
+                    totalSubmissoes,
+                    emAnalise,
+                    aprovados,
+                    reprovados,
+                    analisandos);
+
+        } catch (Exception e) {
+            throw new ApiException(
+                    "Erro ao obter os indicadores dos projetos.");
+        }
+    }
+
+    @Override
+    public ProjetoIndicadoresDTO obterIndicadoresGerais() throws ApiException {
+        try {
+
+            Long totalSubmissoes = repository.count();
+
+            Long emAnalise = repository.countBySituacao(
+                    SituacaoProjeto.EM_ANALISE);
+
+            Long aprovados = repository.countBySituacao(
+                    SituacaoProjeto.APROVADO);
+
+            Long analisandos = repository.countBySituacao(
+                    SituacaoProjeto.ANALISADO);
+
+            Long reprovados = repository.countBySituacao(
+                    SituacaoProjeto.REPROVADO);
+
+            return new ProjetoIndicadoresDTO(
+                    totalSubmissoes,
+                    emAnalise,
+                    aprovados,
+                    reprovados,
+                    analisandos);
+
+        } catch (Exception e) {
+            throw new ApiException(
+                    "Erro ao obter os indicadores dos projetos.");
+        }
     }
 
     private void validateAutor(Integer id) throws ApiException {

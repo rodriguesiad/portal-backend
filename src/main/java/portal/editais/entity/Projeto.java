@@ -17,6 +17,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 import portal.editais.enumeration.SituacaoProjeto;
 
@@ -89,6 +90,42 @@ public class Projeto {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Transient
+    public String getProgresso() {
+        int etapasConcluidas = 0;
+
+        if (instituicao != null) {
+            etapasConcluidas++;
+        }
+
+        if (nomeProjeto != null) {
+            etapasConcluidas++;
+        }
+
+        if (localizacao != null) {
+            etapasConcluidas++;
+        }
+
+        if (publicoBeneficiado != null) {
+            etapasConcluidas++;
+        }
+
+        if (planoExecucao != null) {
+            etapasConcluidas++;
+        }
+
+        if (Boolean.TRUE.equals(declarouVeracidadeInformacoes)
+                && Boolean.TRUE.equals(autorizouTratamentoDadosLgpd)
+                && Boolean.TRUE.equals(autorizouMonitoramentoAuditoria)
+                && Boolean.TRUE.equals(comprometeuPrestacaoContas)) {
+            etapasConcluidas++;
+        }
+
+        int percentual = (etapasConcluidas * 100) / 6;
+
+        return percentual + "%";
     }
 
 }

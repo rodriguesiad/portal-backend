@@ -1,6 +1,11 @@
 package portal.editais.service.projeto;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import portal.editais.config.exception.ApiException;
+import portal.editais.dto.projeto.ProjetoFilterDTO;
+import portal.editais.dto.projeto.ProjetoIndicadoresDTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa1DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa2DTO;
 import portal.editais.dto.projeto.etapas.ProjetoEtapa3DTO;
@@ -23,4 +28,12 @@ public interface ProjetoService {
     Projeto implementaProjetoEtapa6(Integer id, ProjetoEtapa6DTO dto) throws ApiException;
 
     Projeto findById(Integer id) throws ApiException;
+
+    Page<Projeto> listarProjetosDoAutor(Pageable pageable, ProjetoFilterDTO filterRequest) throws ApiException;
+
+    Page<Projeto> listarTodosProjetos(Pageable pageable, ProjetoFilterDTO filterRequest) throws ApiException;
+
+    ProjetoIndicadoresDTO obterIndicadoresDoAutor() throws ApiException;
+
+    ProjetoIndicadoresDTO obterIndicadoresGerais() throws ApiException;
 }
