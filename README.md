@@ -276,12 +276,7 @@ O sistema possui os seguintes perfis de usuário:
 
 ### 🔑 Usuários de exemplo (data.sql)
 
-O sistema já possui usuários previamente cadastrados para testes:
-
-- Perfis disponíveis:
-  - PROPONENTE
-  - ADMINISTRADOR
-  - AVALIADOR
+O sistema já possui usuários previamente cadastrados para testes.
 
 - Senha padrão de todos os usuários de exemplo:
 ```
