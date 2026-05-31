@@ -11,4 +11,6 @@ public interface EditalRepository extends JpaRepository<Edital, Integer>, JpaSpe
     List<Edital> findByStatusAndInicioRecebimentoPropostasLessThanEqual(StatusEdital status, LocalDate data);
 
     List<Edital> findByStatusAndFimRecebimentoPropostasBefore(StatusEdital status, LocalDate data);
+
+    List<Edital> findByAvaliadoresId(Integer avaliadorId);
 }

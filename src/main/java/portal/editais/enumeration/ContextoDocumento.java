@@ -1,5 +1,6 @@
 package portal.editais.enumeration;
 
 public enum ContextoDocumento {
-    EDITAL
+    EDITAL,
+    EVIDENCIA
 }

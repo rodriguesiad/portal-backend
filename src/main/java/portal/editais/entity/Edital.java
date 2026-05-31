@@ -1,6 +1,7 @@
 package portal.editais.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -19,6 +21,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,6 +71,10 @@ public class Edital {
     )
     @Builder.Default
     private Set<User> avaliadores = new HashSet<>();
+
+    @OneToMany(mappedBy = "edital", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<CriterioAvaliacao> criterios = new ArrayList<>();
 
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal valorMinimo;
