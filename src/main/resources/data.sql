@@ -141,11 +141,11 @@ VALUES
     'Seleção de parceiros para execução de projetos voltados à certificação, monitoramento e comercialização de créditos de carbono oriundos de iniciativas REDD+ no Estado do Tocantins.',
     500000.00,
     15000000.00,
-    '2026-06-01',
+    '2026-03-01',
     '2026-08-31',
     NOW(),
     NOW(),
-    'ABERTO'
+    'EM_AVALIACAO'
 ),
 
 (
@@ -161,7 +161,7 @@ VALUES
     '2026-07-15',
     NOW(),
     NOW(),
-    'ABERTO'
+    'EM_AVALIACAO'
 ),
 
 (
@@ -310,4 +310,571 @@ VALUES
     7,
     '2026-05-31 02:17:27.104123',
     UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
+);
+
+-- Projetos
+-- REPRESENTANTES LEGAIS
+
+INSERT INTO representante_legal
+(id,nomeCompleto,email,telefone,cpf, cargo)
+VALUES
+(1,'Maria Silva Santos','maria@institutocerrado.org','63999990001','11111111111', 'Diretora'),
+(2,'João Pereira Lima','joao@ecotocantins.org','63999990002','22222222222', 'Gestor'),
+(3,'Ana Souza Costa','ana@aguaviva.org','63999990003','33333333333', 'Gestora'),
+(4,'Carlos Oliveira Rocha','carlos@indigena.org','63999990004','44444444444', 'Diretora'),
+(5,'Fernanda Almeida','fernanda@brigadas.org','63999990005','55555555555', 'Presidente'),
+(6,'Ricardo Mendes','ricardo@agroverde.org','63999990006','66666666666', 'Diretor'),
+(7,'Juliana Barbosa','juliana@biodiversidade.org','63999990007','77777777777', 'Diretor');
+
+INSERT INTO representante_legal
+(id,nomeCompleto,email,telefone,cpf,cargo)
+VALUES
+(8,'Paulo Carvalho','paulo@carbonoto.org','63999990008','88888888888','Diretor Executivo'),
+(9,'Luciana Ramos','luciana@appsvivas.org','63999990009','99999999999','Presidente'),
+(10,'Marcos Ferreira','marcos@nascentes.org','63999990010','10101010101','Coordenador'),
+(11,'Patricia Sousa','patricia@guardioes.org','63999990011','11111111112','Diretora');
+
+-- INSTITUIÇÕES
+
+INSERT INTO instituicao
+(
+ id,
+ createdAt,
+ cnpj,
+ razaoSocial,
+ nomeFantasia,
+ dataFundacao,
+ id_natureza_juridica,
+ areaAtuacao,
+ site,
+ situacao,
+ id_representante_legal
+)
+VALUES
+(
+ 1,
+ NOW(),
+ '12.345.678/0001-01',
+ 'Instituto Cerrado Sustentável',
+ 'ICS',
+ '2014-03-10',
+ 56,
+ 'Projetos REDD+, carbono e restauração',
+ 'https://ics.org.br',
+ 'ATIVA',
+ 1
+),
+(
+ 2,
+ NOW(),
+ '12.345.678/0001-02',
+ 'Instituto Eco Tocantins',
+ 'EcoTO',
+ '2016-06-20',
+ 56,
+ 'Conservação ambiental',
+ 'https://ecoto.org.br',
+ 'ATIVA',
+ 2
+),
+(
+ 3,
+ NOW(),
+ '12.345.678/0001-03',
+ 'Associação Água Viva',
+ 'Água Viva',
+ '2012-01-15',
+ 56,
+ 'Recursos hídricos',
+ 'https://aguaviva.org.br',
+ 'ATIVA',
+ 3
+),
+(
+ 4,
+ NOW(),
+ '12.345.678/0001-04',
+ 'Instituto Terras Indígenas',
+ 'ITI',
+ '2010-09-22',
+ 56,
+ 'Gestão territorial indígena',
+ 'https://iti.org.br',
+ 'ATIVA',
+ 4
+),
+(
+ 5,
+ NOW(),
+ '12.345.678/0001-05',
+ 'Associação Brigadas do Cerrado',
+ 'ABC',
+ '2018-05-12',
+ 56,
+ 'Prevenção de queimadas',
+ 'https://abc.org.br',
+ 'ATIVA',
+ 5
+),
+(
+ 6,
+ NOW(),
+ '12.345.678/0001-06',
+ 'Cooperativa Agroverde',
+ 'Agroverde',
+ '2015-04-18',
+ 29,
+ 'Agricultura sustentável',
+ 'https://agroverde.coop.br',
+ 'ATIVA',
+ 6
+),
+(
+ 7,
+ NOW(),
+ '12.345.678/0001-07',
+ 'Instituto Biodiversidade Tocantins',
+ 'IBT',
+ '2013-11-08',
+ 56,
+ 'Fauna e flora',
+ 'https://ibt.org.br',
+ 'ATIVA',
+ 7
+);
+
+-- INSTITUIÇÕES
+
+INSERT INTO instituicao
+(
+id,
+createdAt,
+cnpj,
+razaoSocial,
+nomeFantasia,
+dataFundacao,
+id_natureza_juridica,
+areaAtuacao,
+site,
+situacao,
+id_representante_legal
+)
+VALUES
+
+(
+8,
+NOW(),
+'12.345.678/0001-08',
+'Instituto Carbono Tocantins',
+'ICT',
+'2018-02-01',
+56,
+'Mercado de carbono',
+'https://ict.org.br',
+'ATIVA',
+8
+),
+
+(
+9,
+NOW(),
+'12.345.678/0001-09',
+'Associação APPs Vivas',
+'APPs Vivas',
+'2016-04-20',
+56,
+'Restauração ecológica',
+'https://appsvivas.org.br',
+'ATIVA',
+9
+),
+
+(
+10,
+NOW(),
+'12.345.678/0001-10',
+'Instituto Nascentes do Cerrado',
+'INC',
+'2015-06-15',
+56,
+'Recursos hídricos',
+'https://inc.org.br',
+'ATIVA',
+10
+),
+
+(
+11,
+NOW(),
+'12.345.678/0001-11',
+'Associação Guardiões Apinajé',
+'AGA',
+'2017-08-10',
+56,
+'Proteção territorial indígena',
+'https://aga.org.br',
+'ATIVA',
+11
+);
+
+-- LOCALIZAÇÕES
+
+INSERT INTO localizacao
+(id,id_municipio,latitude,longitude,comunidade)
+VALUES
+(1,4,'-10.184','-48.333','Região Norte de Palmas'),
+(2,7,'-10.708','-48.417','Comunidade Ribeirinha Porto Nacional'),
+(3,14,'-10.790','-49.620','Bacia do Javaés'),
+(4,31,'-6.324','-47.421','Terra Indígena Apinajé'),
+(5,23,'-7.191','-48.207','Zona Rural Araguaína'),
+(6,35,'-11.729','-49.068','Assentamentos Gurupi'),
+(7,32,'-5.646','-48.123','Bico do Papagaio');
+
+INSERT INTO localizacao
+(id,id_municipio,latitude,longitude,comunidade)
+VALUES
+(8,4,'-10.210','-48.310','Comunidade São João'),
+(9,7,'-10.680','-48.430','Projeto Ribeirinho Tocantins'),
+(10,12,'-10.790','-48.880','Assentamento Esperança'),
+(11,31,'-6.280','-47.390','Terra Indígena Apinajé Norte');
+
+-- PÚBLICO BENEFICIADO
+
+INSERT INTO publico_beneficiado
+(
+ id,
+ mulheresQuant,
+ homensQuant,
+ criancasQuant,
+ jovensQuant,
+ idososQuant,
+ povosIndigenasQuant,
+ quilombolasQuant,
+ agricultoresFamiliarQuant,
+ comunidadesTradicionaisQuant,
+ rendaMedia,
+ fonteRendaPrincipal,
+ descricaoAplicacaoBeneficio
+)
+VALUES
+(1,220,180,120,140,40,0,0,80,20,1800,'Serviços Ambientais','Capacitação e geração de renda por carbono'),
+(2,150,170,90,100,30,0,0,60,10,1500,'Agricultura','Recuperação de áreas degradadas'),
+(3,120,130,80,70,20,0,0,50,30,1400,'Pesca','Proteção de nascentes'),
+(4,140,150,110,90,25,250,0,0,40,1200,'Extrativismo','Proteção territorial indígena'),
+(5,90,110,40,60,10,0,0,30,0,1600,'Agricultura','Prevenção de queimadas'),
+(6,200,210,130,120,35,0,0,220,0,1900,'Agricultura Familiar','Transição produtiva sustentável'),
+(7,180,190,90,110,20,0,0,40,20,1700,'Turismo de Natureza','Conservação da biodiversidade');
+
+INSERT INTO publico_beneficiado
+(
+id,
+mulheresQuant,
+homensQuant,
+criancasQuant,
+jovensQuant,
+idososQuant,
+povosIndigenasQuant,
+quilombolasQuant,
+agricultoresFamiliarQuant,
+comunidadesTradicionaisQuant,
+rendaMedia,
+fonteRendaPrincipal,
+descricaoAplicacaoBeneficio
+)
+VALUES
+(
+8,180,170,90,100,20,0,0,70,10,1850,
+'Serviços Ambientais',
+'Fortalecimento da economia verde baseada em créditos de carbono'
+),
+(
+9,140,150,70,90,30,0,0,90,15,1450,
+'Agricultura Familiar',
+'Recuperação produtiva e ambiental de áreas degradadas'
+),
+(
+10,160,180,80,120,25,0,0,60,35,1300,
+'Pesca Artesanal',
+'Proteção de nascentes e recuperação de matas ciliares'
+),
+(
+11,120,130,100,90,15,220,0,0,30,1100,
+'Extrativismo',
+'Proteção territorial e fortalecimento cultural indígena'
+);
+
+-- PLANOS
+
+INSERT INTO plano_execucao
+(
+objetivoGeral,
+objetivoEspecifico
+)
+VALUES
+(
+'Implementar ações de conservação florestal associadas ao mercado de carbono.',
+'Mapear áreas prioritárias, capacitar comunidades e monitorar estoques de carbono.'
+),
+(
+'Recuperar áreas degradadas do Cerrado.',
+'Restaurar APPs, recompor vegetação nativa e reduzir processos erosivos.'
+),
+(
+'Promover agricultura sustentável.',
+'Capacitar produtores e implantar sistemas produtivos de baixa emissão.'
+),
+(
+'Conservar a biodiversidade regional.',
+'Monitorar espécies e recuperar habitats prioritários.'
+),
+(
+'Fortalecer a gestão territorial indígena.',
+'Capacitar lideranças e apoiar o monitoramento territorial.'
+);
+
+INSERT INTO plano_execucao
+(id,objetivoGeral,objetivoEspecifico)
+VALUES
+(
+6,
+'Expandir iniciativas de carbono jurisdicional.',
+'Desenvolver inventário florestal, monitoramento remoto e capacitação comunitária.'
+),
+(
+7,
+'Recuperar áreas prioritárias do Cerrado.',
+'Restaurar vegetação nativa e promover práticas sustentáveis.'
+),
+(
+8,
+'Proteger recursos hídricos.',
+'Recuperar nascentes e ampliar áreas de proteção permanente.'
+),
+(
+9,
+'Fortalecer territórios indígenas.',
+'Promover vigilância territorial e formação de agentes ambientais indígenas.'
+);
+
+INSERT INTO atividade
+(descricao, responsavel, dataInicio, dataFim, id_plano_execucao)
+VALUES
+
+('Mapeamento ambiental da área do projeto','Equipe Técnica','2026-06-01','2026-07-15',1),
+('Inventário florestal e de carbono','Equipe Técnica','2026-07-16','2026-09-30',1),
+
+('Diagnóstico das áreas degradadas','Coordenação Ambiental','2026-06-01','2026-07-01',2),
+('Plantio de mudas nativas','Equipe de Campo','2026-07-02','2026-12-30',2),
+
+('Capacitação de produtores rurais','Equipe Agrícola','2026-08-01','2026-09-01',3),
+('Implantação de unidades demonstrativas','Equipe Agrícola','2026-09-02','2027-03-01',3),
+
+('Levantamento de fauna e flora','Biólogos','2026-06-01','2026-08-30',4),
+('Monitoramento da biodiversidade','Biólogos','2026-09-01','2027-02-28',4),
+
+('Capacitação de lideranças indígenas','Equipe Social','2026-06-01','2026-07-30',5),
+('Monitoramento territorial participativo','Equipe Indígena','2026-08-01','2027-01-31',5);
+
+INSERT INTO atividade
+(descricao,responsavel,dataInicio,dataFim,id_plano_execucao)
+VALUES
+
+('Inventário de carbono florestal','Equipe REDD+','2026-06-01','2026-08-01',6),
+('Monitoramento remoto','Equipe Geoespacial','2026-08-02','2026-12-01',6),
+
+('Levantamento ambiental','Equipe Técnica','2026-06-01','2026-07-15',7),
+('Restauração ecológica','Equipe Campo','2026-07-16','2026-12-30',7),
+
+('Mapeamento de nascentes','Equipe Hidrológica','2026-06-01','2026-07-01',8),
+('Recuperação de APPs','Equipe Ambiental','2026-07-02','2027-01-30',8),
+
+('Formação de agentes indígenas','Equipe Social','2026-05-01','2026-07-01',9),
+('Monitoramento territorial','Equipe Comunitária','2026-07-02','2027-02-01',9);
+
+-- PROJETOS
+
+INSERT INTO projeto
+(
+createdAt,
+id_autor,
+id_edital,
+id_instituicao,
+id_localizacao,
+id_publico_beneficiado,
+id_plano_execucao,
+auditor_id,
+nomeProjeto,
+resumo,
+justificativaMerito,
+status,
+declarouVeracidadeInformacoes,
+autorizouTratamentoDadosLgpd,
+comprometeuPrestacaoContas,
+autorizouMonitoramentoAuditoria
+)
+VALUES
+
+(
+NOW(),
+3,
+1,
+1,
+1,
+1,
+1,
+2,
+'Carbono Cerrado Tocantins',
+'Projeto voltado à geração de créditos de carbono REDD+.',
+'Contribui para redução do desmatamento e geração de renda.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+2,
+2,
+2,
+2,
+2,
+2,
+'Restaura Cerrado',
+'Recuperação de áreas degradadas.',
+'Fortalecimento da restauração ecológica.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+6,
+3,
+3,
+3,
+3,
+NULL,
+'Agricultura Carbono Neutro',
+'Promoção de práticas agrícolas sustentáveis.',
+'Redução de emissões e aumento da produtividade.',
+'SUBMETIDO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+7,
+4,
+4,
+4,
+4,
+2,
+'Biodiversidade do Bico',
+'Conservação de espécies prioritárias.',
+'Proteção dos ecossistemas regionais.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+4,
+5,
+5,
+5,
+5,
+2,
+'Territórios Indígenas Sustentáveis',
+'Fortalecimento da gestão territorial indígena.',
+'Proteção ambiental e valorização cultural.',
+'APROVADO',
+b'1',b'1',b'1',b'1'
+);
+
+INSERT INTO projeto
+(
+createdAt,
+id_autor,
+id_edital,
+id_instituicao,
+id_localizacao,
+id_publico_beneficiado,
+id_plano_execucao,
+auditor_id,
+nomeProjeto,
+resumo,
+justificativaMerito,
+status,
+declarouVeracidadeInformacoes,
+autorizouTratamentoDadosLgpd,
+comprometeuPrestacaoContas,
+autorizouMonitoramentoAuditoria
+)
+VALUES
+
+(
+NOW(),
+3,
+1,
+8,
+8,
+8,
+6,
+2,
+'Inventário Carbono Tocantins',
+'Projeto de quantificação e monitoramento de estoques florestais de carbono.',
+'Contribui para geração de ativos ambientais e expansão do mercado de carbono.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+2,
+9,
+9,
+9,
+7,
+2,
+'APPs Vivas do Tocantins',
+'Recuperação de áreas degradadas e recomposição de vegetação nativa.',
+'Promove restauração ecológica em áreas prioritárias.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+3,
+10,
+10,
+10,
+8,
+2,
+'Nascentes do Cerrado',
+'Proteção e recuperação de nascentes em bacias prioritárias.',
+'Melhora a disponibilidade hídrica e reduz processos erosivos.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
+),
+
+(
+NOW(),
+3,
+4,
+11,
+11,
+11,
+9,
+2,
+'Guardiões do Território Apinajé',
+'Fortalecimento da vigilância territorial indígena.',
+'Integra proteção ambiental e valorização cultural.',
+'EM_AVALIACAO',
+b'1',b'1',b'1',b'1'
 );
