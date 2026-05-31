@@ -2,6 +2,7 @@ package portal.editais.service.edital;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -110,6 +111,11 @@ public class EditalServiceImpl implements EditalService {
                 .status(StatusEdital.RASCUNHO)
                 .build();
         aplicarCriterios(edital, dto.criterios());
+
+        if (dto.inicioRecebimentoPropostas().isEqual(LocalDate.now())
+                || dto.inicioRecebimentoPropostas().isBefore(LocalDate.now())) {
+            edital.setStatus(StatusEdital.ABERTO);
+        }
 
         Edital editalSalvo = editalRepository.save(edital);
         vincularDocumentosAoEdital(editalSalvo, dto.documentosIds());
