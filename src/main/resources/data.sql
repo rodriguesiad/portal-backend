@@ -7,7 +7,9 @@ VALUES
 ('2026-05-30', '2026-05-30', 'Avaliador Tocantins', 'avaliador@portal.to.gov.br', 
     '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'AVALIADOR'),
 ('2026-05-30', '2026-05-30', 'Proponente Tocantins', 'proponente@portal.to.gov.br', 
- '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'PROPONENTE');
+ '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'PROPONENTE'),
+('2026-05-30', '2026-05-30', 'Fiscal Tocantins', 'fiscal@portal.to.gov.br',
+ '$2a$10$qo5HA3l5CI36aB83YXnqN.X8dPao5BqC1OSAa5PZzUhyPYJ1UEKCa', 'AUDITOR');
 
 INSERT INTO natureza_juridica (`codigo`, `nome`) VALUES
 ('101-5', 'Órgão Público do Poder Executivo Federal'),
