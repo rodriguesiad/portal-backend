@@ -59,16 +59,15 @@ public class Instituicao {
     @Column(length = 500)
     private String redesSociais;
 
-    @OneToOne(mappedBy = "instituicao",
-          cascade = CascadeType.ALL,
-          orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_representante_legal")
     private RepresentanteLegal representanteLegal;
 
     @Column(length = 500)
     private String situacao;
 
     @OneToOne(mappedBy = "instituicao")
-    private Subprojeto subprojeto;
+    private Projeto projeto;
 
     @PrePersist
     protected void prePersist() {

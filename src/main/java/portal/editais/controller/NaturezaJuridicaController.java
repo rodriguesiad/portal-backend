@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import portal.editais.config.exception.ApiException;
-import portal.editais.dto.natureza.NaturezaJuridicaResponseDTO;
+import portal.editais.dto.projeto.natureza.NaturezaJuridicaResponseDTO;
 import portal.editais.service.natureza.juridica.NaturezaJuridicaService;
 
 @RestController
 @RequestMapping("/natureza-juridicas")
+@Tag(name = "Naturezas Jurídicas")
 public class NaturezaJuridicaController {
 
     private NaturezaJuridicaService service;

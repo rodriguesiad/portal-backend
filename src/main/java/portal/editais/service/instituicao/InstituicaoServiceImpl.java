@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import portal.editais.config.exception.ApiException;
-import portal.editais.dto.instituicao.InstituicaoDTO;
+import portal.editais.dto.projeto.instituicao.InstituicaoDTO;
 import portal.editais.entity.Instituicao;
 import portal.editais.entity.NaturezaJuridica;
 import portal.editais.entity.RepresentanteLegal;
@@ -31,6 +31,10 @@ public class InstituicaoServiceImpl implements InstituicaoService {
     @Transactional
     public Instituicao create(InstituicaoDTO dto) throws ApiException {
         Optional<NaturezaJuridica> naturezaJuridica = naturezaJuridicaRepository.findById(dto.idNaturezaJuridica());
+
+        if (naturezaJuridica.isEmpty()) {
+            throw new ApiException("Natureza jurídica não encontrada.");
+        }
 
         Instituicao registro = new Instituicao();
         registro.setNomeFantasia(dto.nomeFantasia());

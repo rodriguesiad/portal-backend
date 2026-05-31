@@ -38,6 +38,7 @@ import portal.editais.repository.FrenteAtuacaoRepository;
 import portal.editais.repository.OrgaoProponenteRepository;
 import portal.editais.repository.RegiaoImediataRepository;
 import portal.editais.repository.UserRepository;
+import portal.editais.repository.specifications.EditalSpecifications;
 
 @Service
 public class EditalServiceImpl implements EditalService {
@@ -54,15 +55,14 @@ public class EditalServiceImpl implements EditalService {
     private final UserRepository userRepository;
 
     public EditalServiceImpl(
-        EditalRepository editalRepository,
-        EstadoRepository estadoRepository,
-        OrgaoProponenteRepository orgaoProponenteRepository,
-        FrenteAtuacaoRepository frenteAtuacaoRepository,
-        RegiaoImediataRepository regiaoImediataRepository,
-        DocumentoRepository documentoRepository,
-        DocumentoEditalRepository documentoEditalRepository,
-        UserRepository userRepository
-    ) {
+            EditalRepository editalRepository,
+            EstadoRepository estadoRepository,
+            OrgaoProponenteRepository orgaoProponenteRepository,
+            FrenteAtuacaoRepository frenteAtuacaoRepository,
+            RegiaoImediataRepository regiaoImediataRepository,
+            DocumentoRepository documentoRepository,
+            DocumentoEditalRepository documentoEditalRepository,
+            UserRepository userRepository) {
         this.editalRepository = editalRepository;
         this.estadoRepository = estadoRepository;
         this.orgaoProponenteRepository = orgaoProponenteRepository;
@@ -110,8 +110,7 @@ public class EditalServiceImpl implements EditalService {
                 .stream()
                 .map(documentoEdital -> new DocumentoVinculadoResponseDTO(
                         documentoEdital.getDocumento().getId(),
-                        documentoEdital.getDocumento().getNomeOriginal()
-                ))
+                        documentoEdital.getDocumento().getNomeOriginal()))
                 .toList();
 
         return EditalResponseDTO.toResponse(editalRepository.save(edital), documentos);
@@ -127,7 +126,8 @@ public class EditalServiceImpl implements EditalService {
 
         Edital edital = buscarEdital(id);
         if (edital.getStatus() != StatusEdital.RASCUNHO) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Somente editais em rascunho podem ser atualizados.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Somente editais em rascunho podem ser atualizados.");
         }
 
         OrgaoProponente orgaoProponente = buscarOrgaoProponente(dto.orgaoProponenteId());
@@ -154,8 +154,7 @@ public class EditalServiceImpl implements EditalService {
                 .stream()
                 .map(documentoEdital -> new DocumentoVinculadoResponseDTO(
                         documentoEdital.getDocumento().getId(),
-                        documentoEdital.getDocumento().getNomeOriginal()
-                ))
+                        documentoEdital.getDocumento().getNomeOriginal()))
                 .toList();
 
         return EditalResponseDTO.toResponse(editalRepository.save(edital), documentos);
@@ -174,12 +173,11 @@ public class EditalServiceImpl implements EditalService {
     public EditalResponseDTO buscarEditalPorId(Integer id) {
         Edital edital = buscarEdital(id);
         List<DocumentoVinculadoResponseDTO> documentos = documentoEditalRepository.findByEditalId(edital.getId())
-        .stream()
-        .map(documentoEdital -> new DocumentoVinculadoResponseDTO(
-                documentoEdital.getDocumento().getId(),
-                documentoEdital.getDocumento().getNomeOriginal()
-        ))
-        .toList();
+                .stream()
+                .map(documentoEdital -> new DocumentoVinculadoResponseDTO(
+                        documentoEdital.getDocumento().getId(),
+                        documentoEdital.getDocumento().getNomeOriginal()))
+                .toList();
 
         return EditalResponseDTO.toResponse(edital, documentos);
     }
@@ -187,21 +185,20 @@ public class EditalServiceImpl implements EditalService {
     @Override
     @Transactional(readOnly = true)
     public Page<EditalResumoResponseDTO> listarEditaisPublicos(
-        SituacaoEdital situacao,
-        Integer frenteAtuacaoId,
-        Integer regiaoImediataId,
-        Integer orgaoProponenteId,
-        LocalDate inicioRecebimento,
-        LocalDate fimRecebimento,
-        Pageable pageable
-    ) {
+            SituacaoEdital situacao,
+            Integer frenteAtuacaoId,
+            Integer regiaoImediataId,
+            Integer orgaoProponenteId,
+            LocalDate inicioRecebimento,
+            LocalDate fimRecebimento,
+            Pageable pageable) {
         Specification<Edital> specification = EditalSpecifications.publico()
-            .and(EditalSpecifications.comSituacaoPublica(situacao))
-            .and(EditalSpecifications.comFrenteAtuacao(frenteAtuacaoId))
-            .and(EditalSpecifications.comRegiaoImediata(regiaoImediataId))
-            .and(EditalSpecifications.comOrgaoProponente(orgaoProponenteId))
-            .and(EditalSpecifications.comInicioRecebimento(inicioRecebimento))
-            .and(EditalSpecifications.comFimRecebimento(fimRecebimento));
+                .and(EditalSpecifications.comSituacaoPublica(situacao))
+                .and(EditalSpecifications.comFrenteAtuacao(frenteAtuacaoId))
+                .and(EditalSpecifications.comRegiaoImediata(regiaoImediataId))
+                .and(EditalSpecifications.comOrgaoProponente(orgaoProponenteId))
+                .and(EditalSpecifications.comInicioRecebimento(inicioRecebimento))
+                .and(EditalSpecifications.comFimRecebimento(fimRecebimento));
 
         return editalRepository.findAll(specification, pageable).map(EditalResumoResponseDTO::toResponse);
     }
@@ -209,20 +206,19 @@ public class EditalServiceImpl implements EditalService {
     @Override
     @Transactional(readOnly = true)
     public Page<EditalResumoResponseDTO> listarEditaisAdministrativos(
-        StatusEdital status,
-        Integer frenteAtuacaoId,
-        Integer regiaoImediataId,
-        Integer orgaoProponenteId,
-        LocalDate inicioRecebimento,
-        LocalDate fimRecebimento,
-        Pageable pageable
-    ) {
+            StatusEdital status,
+            Integer frenteAtuacaoId,
+            Integer regiaoImediataId,
+            Integer orgaoProponenteId,
+            LocalDate inicioRecebimento,
+            LocalDate fimRecebimento,
+            Pageable pageable) {
         Specification<Edital> specification = EditalSpecifications.comStatus(status)
-            .and(EditalSpecifications.comFrenteAtuacao(frenteAtuacaoId))
-            .and(EditalSpecifications.comRegiaoImediata(regiaoImediataId))
-            .and(EditalSpecifications.comOrgaoProponente(orgaoProponenteId))
-            .and(EditalSpecifications.comInicioRecebimento(inicioRecebimento))
-            .and(EditalSpecifications.comFimRecebimento(fimRecebimento));
+                .and(EditalSpecifications.comFrenteAtuacao(frenteAtuacaoId))
+                .and(EditalSpecifications.comRegiaoImediata(regiaoImediataId))
+                .and(EditalSpecifications.comOrgaoProponente(orgaoProponenteId))
+                .and(EditalSpecifications.comInicioRecebimento(inicioRecebimento))
+                .and(EditalSpecifications.comFimRecebimento(fimRecebimento));
 
         return editalRepository.findAll(specification, pageable).map(EditalResumoResponseDTO::toResponse);
     }
@@ -234,16 +230,14 @@ public class EditalServiceImpl implements EditalService {
         LocalDate hoje = LocalDate.now();
 
         List<Edital> editaisParaAbrir = editalRepository.findByStatusAndInicioRecebimentoPropostasLessThanEqual(
-            StatusEdital.RASCUNHO,
-            hoje
-        );
+                StatusEdital.RASCUNHO,
+                hoje);
         editaisParaAbrir.forEach(edital -> edital.setStatus(StatusEdital.ABERTO));
         editalRepository.saveAll(editaisParaAbrir);
 
         List<Edital> editaisParaAvaliacao = editalRepository.findByStatusAndFimRecebimentoPropostasBefore(
-            StatusEdital.ABERTO,
-            hoje
-        );
+                StatusEdital.ABERTO,
+                hoje);
         editaisParaAvaliacao.forEach(edital -> edital.setStatus(StatusEdital.EM_AVALIACAO));
         editalRepository.saveAll(editaisParaAvaliacao);
     }
@@ -255,44 +249,46 @@ public class EditalServiceImpl implements EditalService {
         }
 
         boolean documentoComContextoInvalido = documentos.stream()
-            .anyMatch(documento -> documento.getContexto() != ContextoDocumento.EDITAL);
+                .anyMatch(documento -> documento.getContexto() != ContextoDocumento.EDITAL);
 
         if (documentoComContextoInvalido) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Todos os documentos devem possuir contexto EDITAL.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Todos os documentos devem possuir contexto EDITAL.");
         }
 
         return documentos.stream()
-            .map(documento -> documentoEditalRepository.save(DocumentoEdital.builder()
-                .edital(edital)
-                .documento(documento)
-                .build()))
-            .map(DocumentoEditalResponseDTO::toResponse)
-            .toList();
+                .map(documento -> documentoEditalRepository.save(DocumentoEdital.builder()
+                        .edital(edital)
+                        .documento(documento)
+                        .build()))
+                .map(DocumentoEditalResponseDTO::toResponse)
+                .toList();
     }
 
     private Edital buscarEdital(Integer id) {
         return editalRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Edital não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Edital não encontrado."));
     }
 
     private Estado buscarEstadoTocantins() {
         return estadoRepository.findBySiglaAndAtivoTrue(SIGLA_TOCANTINS)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Estado do Tocantins não configurado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Estado do Tocantins não configurado."));
     }
 
     private OrgaoProponente buscarOrgaoProponente(Integer id) {
         return orgaoProponenteRepository.findByIdAndAtivoTrue(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Órgão proponente inválido."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Órgão proponente inválido."));
     }
 
     private FrenteAtuacao buscarFrenteAtuacao(Integer id) {
         return frenteAtuacaoRepository.findByIdAndAtivoTrue(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Frente de atuação inválida."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Frente de atuação inválida."));
     }
 
     private RegiaoImediata buscarRegiaoImediata(Integer id) {
         return regiaoImediataRepository.findByIdAndAtivoTrue(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Região imediata inválida."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Região imediata inválida."));
     }
 
     private Set<User> buscarAvaliadores(List<Integer> avaliadoresIds) {
@@ -303,7 +299,7 @@ public class EditalServiceImpl implements EditalService {
         List<User> usuarios = new ArrayList<>();
         avaliadoresIds.forEach(x -> {
             User usuario = userRepository.findById(x).isPresent() ? userRepository.findById(x).get() : null;
-            if(usuario != null) {
+            if (usuario != null) {
                 usuarios.add(usuario);
             }
         });
@@ -313,10 +309,11 @@ public class EditalServiceImpl implements EditalService {
         }
 
         boolean existeUsuarioSemPerfilAvaliador = usuarios.stream()
-            .anyMatch(usuario -> usuario.getProfile() != Profile.AVALIADOR);
+                .anyMatch(usuario -> usuario.getProfile() != Profile.AVALIADOR);
 
         if (existeUsuarioSemPerfilAvaliador) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Todos os avaliadores devem possuir perfil AVALIADOR.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Todos os avaliadores devem possuir perfil AVALIADOR.");
         }
 
         return new HashSet<>(usuarios);
@@ -324,13 +321,15 @@ public class EditalServiceImpl implements EditalService {
 
     private void validarValores(BigDecimal valorMinimo, BigDecimal valorMaximo) {
         if (valorMinimo != null && valorMaximo != null && valorMinimo.compareTo(valorMaximo) > 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Valor mínimo não pode ser maior que o valor máximo.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Valor mínimo não pode ser maior que o valor máximo.");
         }
     }
 
     private void validarPeriodo(LocalDate inicio, LocalDate fim) {
         if (inicio != null && fim != null && inicio.isAfter(fim)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Início do recebimento não pode ser posterior ao fim.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Início do recebimento não pode ser posterior ao fim.");
         }
     }
 

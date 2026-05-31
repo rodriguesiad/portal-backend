@@ -1,4 +1,4 @@
-package portal.editais.dto.instituicao;
+package portal.editais.dto.projeto.instituicao;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,19 +1,19 @@
-package portal.editais.dto.subprojeto;
+package portal.editais.dto.projeto.etapas;
 
 import java.time.LocalDateTime;
 
-import portal.editais.dto.instituicao.InstituicaoResponseDTO;
+import portal.editais.dto.projeto.instituicao.InstituicaoResponseDTO;
 import portal.editais.dto.user.UserResponseDTO;
-import portal.editais.entity.Subprojeto;
+import portal.editais.entity.Projeto;
 
-public record SubprojetoResponseEtapa1DTO(
+public record ProjetoResponseEtapa1DTO(
         Integer id,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         InstituicaoResponseDTO instituicao,
         UserResponseDTO autor) {
-    public static SubprojetoResponseEtapa1DTO toResponse(Subprojeto entity) {
-        return new SubprojetoResponseEtapa1DTO(
+    public static ProjetoResponseEtapa1DTO toResponse(Projeto entity) {
+        return new ProjetoResponseEtapa1DTO(
                 entity.getId(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt(),

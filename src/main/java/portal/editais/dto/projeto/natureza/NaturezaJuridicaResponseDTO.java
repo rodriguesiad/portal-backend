@@ -1,4 +1,4 @@
-package portal.editais.dto.natureza;
+package portal.editais.dto.projeto.natureza;
 
 import portal.editais.entity.NaturezaJuridica;
 
