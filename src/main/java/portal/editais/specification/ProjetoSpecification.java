@@ -15,7 +15,7 @@ import jakarta.persistence.criteria.Root;
 import lombok.Builder;
 import portal.editais.entity.Edital;
 import portal.editais.entity.Projeto;
-import portal.editais.enumeration.SituacaoProjeto;
+import portal.editais.enumeration.StatusProjeto;
 
 @Builder
 public class ProjetoSpecification implements Specification<Projeto> {
@@ -30,7 +30,7 @@ public class ProjetoSpecification implements Specification<Projeto> {
     private final transient String tituloEdital = null;
 
     @Builder.Default
-    private final transient List<SituacaoProjeto> situacoes = null;
+    private final transient List<StatusProjeto> status = null;
 
     @Override
     public Predicate toPredicate(
@@ -62,8 +62,8 @@ public class ProjetoSpecification implements Specification<Projeto> {
                                     "%" + titulo.toLowerCase() + "%"));
                 });
 
-        if (!ObjectUtils.isEmpty(situacoes)) {
-            predicates.add(root.get("situacao").in(situacoes));
+        if (!ObjectUtils.isEmpty(status)) {
+            predicates.add(root.get("status").in(status));
         }
 
         return builder.and(predicates.toArray(new Predicate[0]));

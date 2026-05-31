@@ -2,8 +2,9 @@ package portal.editais.dto.projeto;
 
 public record ProjetoIndicadoresDTO(
         Long totalSubmissoes,
-        Long emAnalise,
+        Long submetidos,
+        Long emAvaliacao,
         Long aprovados,
         Long reprovados,
-        Long analisado) {
+        Long emExecucao) {
 }

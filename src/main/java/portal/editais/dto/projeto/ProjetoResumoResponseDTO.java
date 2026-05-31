@@ -3,7 +3,7 @@ package portal.editais.dto.projeto;
 import java.time.LocalDate;
 
 import portal.editais.entity.Projeto;
-import portal.editais.enumeration.SituacaoProjeto;
+import portal.editais.enumeration.StatusProjeto;
 
 public record ProjetoResumoResponseDTO(
         Integer id,
@@ -14,7 +14,7 @@ public record ProjetoResumoResponseDTO(
         String nomeEdital,
         LocalDate dataCriacao,
         String progresso,
-        SituacaoProjeto situacao) {
+        StatusProjeto status) {
 
     public static ProjetoResumoResponseDTO toResponse(Projeto entity) {
         return new ProjetoResumoResponseDTO(
@@ -42,6 +42,6 @@ public record ProjetoResumoResponseDTO(
                         : null,
 
                 entity.getProgresso(),
-                entity.getSituacao());
+                entity.getStatus());
     }
 }

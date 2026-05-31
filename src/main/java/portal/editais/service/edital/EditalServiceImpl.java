@@ -2,7 +2,12 @@ package portal.editais.service.edital;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,14 +17,18 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
 import portal.editais.dto.documento.DocumentoEditalResponseDTO;
-import portal.editais.dto.documento.DocumentoResponseDTO;
 import portal.editais.dto.documento.DocumentoVinculadoResponseDTO;
-import portal.editais.dto.edital.*;
+import portal.editais.dto.edital.CriterioAvaliacaoDTO;
+import portal.editais.dto.edital.EditalDTO;
+import portal.editais.dto.edital.EditalResponseDTO;
+import portal.editais.dto.edital.EditalResumoResponseDTO;
+import portal.editais.dto.edital.EditalUpdateDTO;
+import portal.editais.entity.CriterioAvaliacao;
 import portal.editais.entity.Documento;
 import portal.editais.entity.DocumentoEdital;
 import portal.editais.entity.Edital;
-import portal.editais.entity.CriterioAvaliacao;
 import portal.editais.entity.Estado;
 import portal.editais.entity.FrenteAtuacao;
 import portal.editais.entity.OrgaoProponente;
@@ -87,19 +96,19 @@ public class EditalServiceImpl implements EditalService {
         }
 
         Edital edital = Edital.builder()
-            .titulo(dto.titulo())
-            .estado(tocantins)
-            .orgaoProponente(orgaoProponente)
-            .frenteAtuacao(buscarFrenteAtuacao(dto.frenteAtuacaoId()))
-            .regiaoImediata(buscarRegiaoImediata(dto.regiaoImediataId()))
-            .avaliadores(buscarAvaliadores(dto.avaliadoresIds()))
-            .valorMinimo(dto.valorMinimo())
-            .valorMaximo(dto.valorMaximo())
-            .inicioRecebimentoPropostas(dto.inicioRecebimentoPropostas())
-            .fimRecebimentoPropostas(dto.fimRecebimentoPropostas())
-            .resumo(dto.resumo())
-            .status(StatusEdital.RASCUNHO)
-            .build();
+                .titulo(dto.titulo())
+                .estado(tocantins)
+                .orgaoProponente(orgaoProponente)
+                .frenteAtuacao(buscarFrenteAtuacao(dto.frenteAtuacaoId()))
+                .regiaoImediata(buscarRegiaoImediata(dto.regiaoImediataId()))
+                .avaliadores(buscarAvaliadores(dto.avaliadoresIds()))
+                .valorMinimo(dto.valorMinimo())
+                .valorMaximo(dto.valorMaximo())
+                .inicioRecebimentoPropostas(dto.inicioRecebimentoPropostas())
+                .fimRecebimentoPropostas(dto.fimRecebimentoPropostas())
+                .resumo(dto.resumo())
+                .status(StatusEdital.RASCUNHO)
+                .build();
         aplicarCriterios(edital, dto.criterios());
 
         Edital editalSalvo = editalRepository.save(edital);
@@ -347,13 +356,12 @@ public class EditalServiceImpl implements EditalService {
     private void aplicarCriterios(Edital edital, List<CriterioAvaliacaoDTO> criterios) {
         edital.getCriterios().clear();
         criterios.stream()
-            .sorted(Comparator.comparing(CriterioAvaliacaoDTO::ordem))
-            .forEach(dto -> edital.getCriterios().add(CriterioAvaliacao.builder()
-                .edital(edital)
-                .nome(dto.nome())
-                .descricao(dto.descricao())
-                .ordem(dto.ordem())
-                .build()));
+                .sorted(Comparator.comparing(CriterioAvaliacaoDTO::ordem))
+                .forEach(dto -> edital.getCriterios().add(CriterioAvaliacao.builder()
+                        .edital(edital)
+                        .nome(dto.nome())
+                        .descricao(dto.descricao())
+                        .ordem(dto.ordem())
+                        .build()));
     }
 }
-

@@ -5,5 +5,5 @@ import java.util.List;
 public record ProjetoFilterDTO(
         String nomeProjeto,
         String tituloEdital,
-        List<String> situacoes) {
+        List<String> status) {
 }

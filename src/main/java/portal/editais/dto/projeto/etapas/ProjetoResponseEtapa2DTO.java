@@ -1,12 +1,11 @@
 package portal.editais.dto.projeto.etapas;
 
-import portal.editais.dto.edital.EditalResumoResponseDTO;
 import portal.editais.entity.Projeto;
-import portal.editais.enumeration.SituacaoProjeto;
+import portal.editais.enumeration.StatusProjeto;
 
 public record ProjetoResponseEtapa2DTO(
                 Integer id,
-                SituacaoProjeto situacao,
+                StatusProjeto status,
                 String nomeProjeto,
                 Integer edital,
                 String resumo,
@@ -14,7 +13,7 @@ public record ProjetoResponseEtapa2DTO(
         public static ProjetoResponseEtapa2DTO toResponse(Projeto entity) {
                 return new ProjetoResponseEtapa2DTO(
                                 entity.getId(),
-                                entity.getSituacao(),
+                                entity.getStatus(),
                                 entity.getNomeProjeto(),
                                 entity.getEdital() != null ? entity.getEdital().getId() : null,
                                 entity.getResumo(),
