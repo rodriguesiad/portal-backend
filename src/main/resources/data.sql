@@ -91,29 +91,6 @@ INSERT INTO `orgaos_proponentes` VALUES (1,1,1,'SEMARH','SEMARH'),(1,1,2,'NATURA
 
 INSERT INTO `frentes_atuacao` VALUES (1,1,'AGRICULTURA','Agricultura'),(1,2,'QUILOMBOLA','Quilombola'),(1,3,'RESTAURACAO','Restauração'),(1,4,'CONSERVACAO','Conservação'),(1,5,'POVOS_INDIGENAS','Povos Indígenas'),(1,6,'RECURSOS_HIDRICOS','Recursos Hídricos'),(1,7,'EDUCACAO_AMBIENTAL','Educação Ambiental'),(1,8,'PREVENCAO_QUEIMADAS','Prevenção de Queimadas'),(1,9,'CARBONO','Carbono'),(1,10,'BIODIVERSIDADE','Biodiversidade');
 
-INSERT INTO documentos (
-    criadoEm,
-    tamanhoBytes,
-    id,
-    tipoConteudo,
-    bucket,
-    objectKey,
-    url,
-    nomeOriginal,
-    contexto
-)
-VALUES (
-    '2026-05-31 02:08:48.641889',
-    3925705,
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f'),
-    'application/pdf',
-    'portal-editais',
-    'edital/7eac097d-c61a-4c20-92e2-a056c04b4b0f/39dbc37a-533d-41e1-9033-b206d477c9f6.pdf',
-    'http://localhost:9000/portal-editais/edital/7eac097d-c61a-4c20-92e2-a056c04b4b0f/39dbc37a-533d-41e1-9033-b206d477c9f6.pdf',
-    '2022.-Edital-de-Chamamento-Publico-no.-01.2022-DOE-1.pdf',
-    'EDITAL'
-);
-
 -- Editais
 INSERT INTO editais (
     estado_id,
@@ -269,48 +246,6 @@ VALUES
 (5,2),
 (6,2),
 (7,2);
-
-INSERT INTO edital_documentos (
-    edital_id,
-    criadoEm,
-    documento_id
-)
-VALUES
-(
-    1,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-),
-(
-    2,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-),
-(
-    3,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-),
-(
-    4,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-),
-(
-    5,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-),
-(
-    6,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-),
-(
-    7,
-    '2026-05-31 02:17:27.104123',
-    UUID_TO_BIN('cbeedde6-0d2d-4cfe-ae67-b1697a70e97f')
-);
 
 -- Projetos
 -- REPRESENTANTES LEGAIS
